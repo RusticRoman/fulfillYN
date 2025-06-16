@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase';
 
 interface AuthContextType extends AuthState {
   login: (email: string, password: string) => Promise<void>;
+  signup: (email: string, password: string, firstName: string, lastName: string, userType: 'brand' | '3pl') => Promise<void>;
   logout: () => void;
   setUserType: (type: 'brand' | '3pl' | 'admin') => void;
 }
@@ -109,6 +110,60 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const signup = async (email: string, password: string, firstName: string, lastName: string, userType: 'brand' | '3pl') => {
+    setAuthState(prev => ({ ...prev, isLoading: true }));
+    
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            first_name: firstName,
+            last_name: lastName,
+            user_type: userType,
+          },
+        },
+      });
+
+      if (error) throw error;
+
+      if (data.user) {
+        // Create user profile record
+        const { error: profileError } = await supabase
+          .from('user_profiles')
+          .insert({
+            user_id: data.user.id,
+            first_name: firstName,
+            last_name: lastName,
+            user_type: userType,
+          });
+
+        if (profileError) {
+          console.error('Error creating user profile:', profileError);
+          // Don't throw here as the user account was created successfully
+        }
+
+        const user: User = {
+          id: data.user.id,
+          email: data.user.email || '',
+          firstName: firstName,
+          lastName: lastName,
+          userType: userType,
+        };
+        
+        setAuthState({
+          user,
+          isAuthenticated: true,
+          isLoading: false,
+        });
+      }
+    } catch (error) {
+      setAuthState(prev => ({ ...prev, isLoading: false }));
+      throw error;
+    }
+  };
+
   const logout = async () => {
     await supabase.auth.signOut();
     setAuthState({
@@ -131,6 +186,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     <AuthContext.Provider value={{
       ...authState,
       login,
+      signup,
       logout,
       setUserType,
     }}>
