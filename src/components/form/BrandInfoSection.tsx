@@ -85,7 +85,6 @@ const BrandInfoSection: React.FC<BrandInfoSectionProps> = ({
           onChange={(e) => onChange('contactEmail', e.target.value)}
           onBlur={() => setFieldTouched('contactEmail')}
           error={errors.contactEmail}
-          required
         />
       </div>
       
@@ -97,7 +96,6 @@ const BrandInfoSection: React.FC<BrandInfoSectionProps> = ({
           onChange={(e) => onChange('contactName', e.target.value)}
           onBlur={() => setFieldTouched('contactName')}
           error={errors.contactName}
-          required
         />
         <Input
           id="phone"
@@ -119,7 +117,6 @@ const BrandInfoSection: React.FC<BrandInfoSectionProps> = ({
           onChange={(e) => onChange('industry', e.target.value)}
           onBlur={() => setFieldTouched('industry')}
           error={errors.industry}
-          required
         />
         <Input
           id="websiteUrl"
