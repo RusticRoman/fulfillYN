@@ -52,7 +52,7 @@ export const FormProvider: React.FC<FormProviderProps> = ({ children }) => {
     const stepFields: Record<number, string[]> = {
       0: [], // Contact info is all optional now
       1: ['minimumOrderVolume'], // Only minimum order volume is mandatory in capabilities
-      2: ['references'], // References are required
+      2: [], // References are now optional
       3: [], // Media uploads are optional
       4: [] // Review step - no validation needed
     };
@@ -72,7 +72,7 @@ export const FormProvider: React.FC<FormProviderProps> = ({ children }) => {
     const stepFields: Record<number, string[]> = {
       0: [], // Contact info is all optional
       1: ['minimumOrderVolume'], // Only minimum order volume is mandatory
-      2: ['references'],
+      2: [], // References are now optional
       3: [],
       4: []
     };
