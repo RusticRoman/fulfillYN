@@ -47,10 +47,9 @@ const Header: React.FC<HeaderProps> = ({ onGetStartedClick, onLoginClick, onBack
                 </a>
               </nav>
 
-              {/* Desktop CTA */}
-              <div className="hidden md:flex items-center space-x-4">
+              {/* Desktop CTA - Only Login button */}
+              <div className="hidden md:flex items-center">
                 <Button variant="outline" onClick={onLoginClick}>Log In</Button>
-                <Button onClick={onGetStartedClick}>Get Started</Button>
               </div>
 
               {/* Mobile menu button */}
@@ -79,9 +78,8 @@ const Header: React.FC<HeaderProps> = ({ onGetStartedClick, onLoginClick, onBack
               <a href="#pricing" className="text-gray-700 hover:text-blue-600 transition-colors">
                 Pricing
               </a>
-              <div className="border-t border-gray-200 pt-4 flex flex-col space-y-2">
+              <div className="border-t border-gray-200 pt-4">
                 <Button variant="outline" className="w-full" onClick={onLoginClick}>Log In</Button>
-                <Button className="w-full" onClick={onGetStartedClick}>Get Started</Button>
               </div>
             </div>
           </div>
