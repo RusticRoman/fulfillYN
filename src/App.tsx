@@ -26,7 +26,20 @@ function AppContent() {
   const { isAuthenticated, user, setUserType } = useAuth();
 
   const handleLoginSuccess = () => {
-    setCurrentView('cabinet');
+    // Check if user already has a userType and navigate accordingly
+    if (user?.userType) {
+      if (user.userType === '3pl') {
+        setCurrentView('warehouses');
+      } else if (user.userType === 'admin') {
+        setCurrentView('admin');
+      } else if (user.userType === 'brand') {
+        setCurrentView('brands');
+      } else {
+        setCurrentView('cabinet');
+      }
+    } else {
+      setCurrentView('cabinet');
+    }
   };
 
   const handleSignupSuccess = () => {
