@@ -29,19 +29,16 @@ export const useBrandFormValidation = (formData: BrandFormData) => {
       newErrors.brandName = 'Brand name is required';
     }
 
-    if (!formData.contactName.trim()) {
-      newErrors.contactName = 'Contact name is required';
-    }
+    // Contact name is now optional - only validate if provided
+    // No validation needed for contactName
 
-    if (!formData.contactEmail.trim()) {
-      newErrors.contactEmail = 'Contact email is required';
-    } else if (!validateEmail(formData.contactEmail)) {
+    // Contact email is now optional - only validate format if provided
+    if (formData.contactEmail && !validateEmail(formData.contactEmail)) {
       newErrors.contactEmail = 'Please enter a valid email address';
     }
 
-    if (!formData.industry) {
-      newErrors.industry = 'Industry is required';
-    }
+    // Industry is now optional - no validation needed
+    // No validation needed for industry
 
     if (!formData.monthlyVolume || formData.monthlyVolume < 1) {
       newErrors.monthlyVolume = 'Monthly volume must be at least 1 unit';
