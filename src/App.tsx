@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { FormProvider } from './context/FormContext';
+import { BrandFormProvider } from './context/BrandFormContext';
 import FormContainer from './components/FormContainer';
+import BrandFormContainer from './components/form/BrandFormContainer';
 import Header from './components/layout/Header';
 import Hero from './components/sections/Hero';
 import Features from './components/sections/Features';
@@ -14,9 +16,10 @@ import LoginForm from './components/auth/LoginForm';
 import SignupForm from './components/auth/SignupForm';
 import UserCabinet from './components/dashboard/UserCabinet';
 import WarehouseList from './components/dashboard/WarehouseList';
+import BrandDashboard from './components/dashboard/BrandDashboard';
 import AdminDashboard from './components/dashboard/AdminDashboard';
 
-type AppView = 'home' | 'login' | 'signup' | 'cabinet' | 'warehouses' | '3pl-form' | 'admin';
+type AppView = 'home' | 'login' | 'signup' | 'cabinet' | 'warehouses' | '3pl-form' | 'admin' | 'brands' | 'brand-form';
 
 function AppContent() {
   const [currentView, setCurrentView] = useState<AppView>('home');
@@ -36,8 +39,9 @@ function AppContent() {
       setCurrentView('warehouses');
     } else if (type === 'admin') {
       setCurrentView('admin');
+    } else if (type === 'brand') {
+      setCurrentView('brands');
     } else {
-      // For brands, you could redirect to a different dashboard
       setCurrentView('home');
     }
   };
@@ -50,8 +54,16 @@ function AppContent() {
     setCurrentView('3pl-form');
   };
 
+  const handleAddBrand = () => {
+    setCurrentView('brand-form');
+  };
+
   const handleFormSuccess = () => {
     setCurrentView('warehouses');
+  };
+
+  const handleBrandFormSuccess = () => {
+    setCurrentView('brands');
   };
 
   // Signup page
@@ -91,6 +103,37 @@ function AppContent() {
         onBack={() => setCurrentView('cabinet')}
         onLogout={handleLogout}
       />
+    );
+  }
+
+  // Brand dashboard
+  if (currentView === 'brands') {
+    return (
+      <BrandDashboard 
+        onAddBrand={handleAddBrand}
+        onBack={() => setCurrentView('cabinet')}
+      />
+    );
+  }
+
+  // Brand form
+  if (currentView === 'brand-form') {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header onBack={() => setCurrentView('brands')} showBackButton />
+        <main className="max-w-7xl mx-auto px-4 py-6 sm:px-6">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">Create Brand Profile</h2>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              Tell us about your brand and requirements to find the perfect 3PL partners that match your specific needs.
+            </p>
+          </div>
+
+          <BrandFormProvider>
+            <BrandFormContainer onSuccess={handleBrandFormSuccess} />
+          </BrandFormProvider>
+        </main>
+      </div>
     );
   }
 
