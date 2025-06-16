@@ -47,6 +47,10 @@ function AppContent() {
     setCurrentView('3pl-form');
   };
 
+  const handleFormSuccess = () => {
+    setCurrentView('warehouses');
+  };
+
   // Signup page
   if (currentView === 'signup') {
     return (
@@ -94,14 +98,14 @@ function AppContent() {
         <Header onBack={() => setCurrentView('warehouses')} showBackButton />
         <main className="max-w-7xl mx-auto px-4 py-6 sm:px-6">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">Become a 3PL Partner</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">Add New Warehouse</h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Complete this form to tell us about your logistics capabilities, and join our network of trusted fulfillment partners.
+              Complete this form to add your warehouse to our network and connect with brands looking for fulfillment partners.
             </p>
           </div>
 
           <FormProvider>
-            <FormContainer />
+            <FormContainer onSuccess={handleFormSuccess} />
           </FormProvider>
         </main>
       </div>
