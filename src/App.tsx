@@ -14,8 +14,9 @@ import LoginForm from './components/auth/LoginForm';
 import SignupForm from './components/auth/SignupForm';
 import UserCabinet from './components/dashboard/UserCabinet';
 import WarehouseList from './components/dashboard/WarehouseList';
+import AdminDashboard from './components/dashboard/AdminDashboard';
 
-type AppView = 'home' | 'login' | 'signup' | 'cabinet' | 'warehouses' | '3pl-form';
+type AppView = 'home' | 'login' | 'signup' | 'cabinet' | 'warehouses' | '3pl-form' | 'admin';
 
 function AppContent() {
   const [currentView, setCurrentView] = useState<AppView>('home');
@@ -29,10 +30,12 @@ function AppContent() {
     setCurrentView('cabinet');
   };
 
-  const handleUserTypeSelection = (type: 'brand' | '3pl') => {
+  const handleUserTypeSelection = (type: 'brand' | '3pl' | 'admin') => {
     setUserType(type);
     if (type === '3pl') {
       setCurrentView('warehouses');
+    } else if (type === 'admin') {
+      setCurrentView('admin');
     } else {
       // For brands, you could redirect to a different dashboard
       setCurrentView('home');
@@ -76,6 +79,16 @@ function AppContent() {
     return (
       <UserCabinet 
         onSelectUserType={handleUserTypeSelection}
+        onLogout={handleLogout}
+      />
+    );
+  }
+
+  // Admin dashboard
+  if (currentView === 'admin') {
+    return (
+      <AdminDashboard 
+        onBack={() => setCurrentView('cabinet')}
         onLogout={handleLogout}
       />
     );
