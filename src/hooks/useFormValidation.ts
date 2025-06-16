@@ -8,6 +8,7 @@ export const useFormValidation = (formData: FormData) => {
   const [touched, setTouched] = useState<Record<string, boolean>>({});
 
   const validateEmail = (email: string): boolean => {
+    if (!email) return true; // Email is optional
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
@@ -25,33 +26,18 @@ export const useFormValidation = (formData: FormData) => {
   const validateForm = (): ValidationErrors => {
     const newErrors: ValidationErrors = {};
 
-    // Basic Contact Info
-    if (!formData.firstName) newErrors.firstName = 'First name is required';
-    if (!formData.lastName) newErrors.lastName = 'Last name is required';
-    if (!formData.email) {
-      newErrors.email = 'Email is required';
-    } else if (!validateEmail(formData.email)) {
+    // Basic Contact Info - all optional now
+    if (formData.email && !validateEmail(formData.email)) {
       newErrors.email = 'Please enter a valid email address';
     }
-    if (!formData.phone) newErrors.phone = 'Phone number is required';
-    if (!formData.companyName) newErrors.companyName = 'Company name is required';
     if (formData.websiteUrl && !validateUrl(formData.websiteUrl)) {
       newErrors.websiteUrl = 'Please enter a valid URL';
     }
 
-    // Company Overview
-    if (!formData.yearFounded) newErrors.yearFounded = 'Year founded is required';
-    if (!formData.headquartersAddress) newErrors.headquartersAddress = 'Headquarters address is required';
-    
-    // Warehouse locations
-    formData.warehouseLocations.forEach((location, index) => {
-      if (!location.address) {
-        newErrors[`warehouseLocations.${index}.address`] = 'Warehouse address is required';
-      }
-      if (location.squareFootage <= 0) {
-        newErrors[`warehouseLocations.${index}.squareFootage`] = 'Valid square footage is required';
-      }
-    });
+    // Minimum Order Volume - mandatory with specific range
+    if (!formData.minimumOrderVolume || formData.minimumOrderVolume < 11 || formData.minimumOrderVolume > 99999) {
+      newErrors.minimumOrderVolume = 'Minimum order volume must be between 11 and 99,999 units';
+    }
 
     // Temperature control validation
     if (formData.temperatureControlled && formData.temperatureTypes.length === 0) {
@@ -68,10 +54,7 @@ export const useFormValidation = (formData: FormData) => {
       newErrors.otherCertification = 'Please specify the other certification';
     }
 
-    // WMS validation
-    if (!formData.wmsSystem) {
-      newErrors.wmsSystem = 'Please select a WMS system';
-    }
+    // WMS validation - optional now
     if (formData.wmsSystem === 'other' && !formData.otherWms) {
       newErrors.otherWms = 'Please specify the other WMS system';
     }
@@ -79,44 +62,6 @@ export const useFormValidation = (formData: FormData) => {
     // Proprietary software validation
     if (formData.hasProprietarySoftware && !formData.proprietarySoftwareDetails) {
       newErrors.proprietarySoftwareDetails = 'Please provide details about your proprietary software';
-    }
-
-    // SLA validations
-    if (formData.averageReceivingTime <= 0) {
-      newErrors.averageReceivingTime = 'Please enter a valid receiving time';
-    }
-    if (formData.maxReceivingTime <= 0) {
-      newErrors.maxReceivingTime = 'Please enter a valid max receiving time';
-    }
-    if (!formData.dtcSla) {
-      newErrors.dtcSla = 'DTC SLA information is required';
-    }
-
-    // Returns validation
-    if (formData.handlesReturns && formData.returnsProcessingTime <= 0) {
-      newErrors.returnsProcessingTime = 'Please enter a valid returns processing time';
-    }
-
-    // Accuracy validations
-    if (!formData.orderAccuracyRate) {
-      newErrors.orderAccuracyRate = 'Order accuracy rate is required';
-    }
-    if (!formData.inventoryAccuracyRate) {
-      newErrors.inventoryAccuracyRate = 'Inventory accuracy rate is required';
-    }
-    if (!formData.cycleCounting) {
-      newErrors.cycleCounting = 'Please select a cycle counting frequency';
-    }
-    if (!formData.billingFrequency) {
-      newErrors.billingFrequency = 'Billing frequency is required';
-    }
-
-    // Support validations
-    if (!formData.responseTime) {
-      newErrors.responseTime = 'Response time information is required';
-    }
-    if (!formData.supportHours) {
-      newErrors.supportHours = 'Support hours information is required';
     }
 
     // References validations
@@ -162,11 +107,6 @@ export const useFormValidation = (formData: FormData) => {
     });
     
     // Nested fields
-    formData.warehouseLocations.forEach((_, index) => {
-      allFields[`warehouseLocations.${index}.address`] = true;
-      allFields[`warehouseLocations.${index}.squareFootage`] = true;
-    });
-    
     formData.references.forEach((_, index) => {
       allFields[`references.${index}.brandName`] = true;
       allFields[`references.${index}.website`] = true;
