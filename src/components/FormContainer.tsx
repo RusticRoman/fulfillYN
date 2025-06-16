@@ -18,7 +18,8 @@ const FormContainer: React.FC<FormContainerProps> = ({ onSuccess }) => {
     setFieldTouched,
     submitForm,
     isSubmitting,
-    isSubmitted
+    isSubmitted,
+    submitError
   } = useFormContext();
 
   const { data, errors } = formState;
@@ -26,12 +27,15 @@ const FormContainer: React.FC<FormContainerProps> = ({ onSuccess }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     await submitForm();
-    if (onSuccess) {
-      onSuccess();
+    if (onSuccess && !submitError) {
+      // Only call onSuccess if there was no error
+      setTimeout(() => {
+        onSuccess();
+      }, 2000); // Give time to show the success message
     }
   };
 
-  if (isSubmitted) {
+  if (isSubmitted && !submitError) {
     return <SuccessMessage onContinue={onSuccess} />;
   }
 
@@ -70,6 +74,15 @@ const FormContainer: React.FC<FormContainerProps> = ({ onSuccess }) => {
           setFieldTouched={setFieldTouched} 
         />
         
+        {/* Error Message */}
+        {submitError && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <p className="text-sm text-red-600">
+              <strong>Error:</strong> {submitError}
+            </p>
+          </div>
+        )}
+        
         {/* Submit Button */}
         <div className="flex justify-end pt-6 border-t border-gray-200">
           <Button 
@@ -77,7 +90,7 @@ const FormContainer: React.FC<FormContainerProps> = ({ onSuccess }) => {
             disabled={isSubmitting}
             className="bg-green-600 hover:bg-green-700 px-8 py-3 text-lg"
           >
-            {isSubmitting ? 'Submitting...' : 'Submit 3PL Application'}
+            {isSubmitting ? 'Submitting to Database...' : 'Submit 3PL Application'}
           </Button>
         </div>
       </form>
