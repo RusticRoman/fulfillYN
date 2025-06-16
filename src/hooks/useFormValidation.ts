@@ -64,20 +64,18 @@ export const useFormValidation = (formData: FormData) => {
       newErrors.proprietarySoftwareDetails = 'Please provide details about your proprietary software';
     }
 
-    // References validations
+    // References validations - all optional now
     formData.references.forEach((reference, index) => {
-      if (!reference.brandName) {
-        newErrors[`references.${index}.brandName`] = 'Brand name is required';
-      }
-      if (!reference.website) {
-        newErrors[`references.${index}.website`] = 'Website is required';
-      } else if (!validateUrl(reference.website)) {
-        newErrors[`references.${index}.website`] = 'Please enter a valid URL';
-      }
-      if (!reference.contactEmail) {
-        newErrors[`references.${index}.contactEmail`] = 'Contact email is required';
-      } else if (!validateEmail(reference.contactEmail)) {
-        newErrors[`references.${index}.contactEmail`] = 'Please enter a valid email address';
+      // Only validate if any field is filled (partial validation)
+      const hasAnyField = reference.brandName || reference.website || reference.contactEmail;
+      
+      if (hasAnyField) {
+        if (reference.website && !validateUrl(reference.website)) {
+          newErrors[`references.${index}.website`] = 'Please enter a valid URL';
+        }
+        if (reference.contactEmail && !validateEmail(reference.contactEmail)) {
+          newErrors[`references.${index}.contactEmail`] = 'Please enter a valid email address';
+        }
       }
     });
 

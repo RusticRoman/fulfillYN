@@ -42,7 +42,7 @@ const ReferencesSection: React.FC<ReferencesSectionProps> = ({
   };
 
   return (
-    <Card title="Customer References" subtitle="Please provide up to 3 references" className="mb-6 animate-fadeIn">
+    <Card title="Customer References" subtitle="Please provide up to 3 references (optional)" className="mb-6 animate-fadeIn">
       {formData.references.map((reference, index) => (
         <div key={index} className="mb-6 p-4 border border-gray-200 rounded-md">
           <div className="flex justify-between items-center mb-4">
@@ -66,7 +66,6 @@ const ReferencesSection: React.FC<ReferencesSectionProps> = ({
               value={reference.brandName}
               onChange={(e) => updateReference(index, 'brandName', e.target.value)}
               error={errors[`references.${index}.brandName`]}
-              required
             />
             
             <Input
@@ -76,7 +75,6 @@ const ReferencesSection: React.FC<ReferencesSectionProps> = ({
               value={reference.website}
               onChange={(e) => updateReference(index, 'website', e.target.value)}
               error={errors[`references.${index}.website`]}
-              required
             />
           </div>
           
@@ -88,7 +86,6 @@ const ReferencesSection: React.FC<ReferencesSectionProps> = ({
               value={reference.contactEmail}
               onChange={(e) => updateReference(index, 'contactEmail', e.target.value)}
               error={errors[`references.${index}.contactEmail`]}
-              required
             />
           </div>
         </div>
