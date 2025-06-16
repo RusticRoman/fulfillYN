@@ -9,6 +9,189 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      admin_actions: {
+        Row: {
+          id: string
+          admin_user_id: string
+          action_type: string
+          target_type: string
+          target_id: string
+          description: string | null
+          metadata: Json | null
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          admin_user_id: string
+          action_type: string
+          target_type: string
+          target_id: string
+          description?: string | null
+          metadata?: Json | null
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          admin_user_id?: string
+          action_type?: string
+          target_type?: string
+          target_id?: string
+          description?: string | null
+          metadata?: Json | null
+          created_at?: string | null
+        }
+      }
+      brand_requirements: {
+        Row: {
+          id: string
+          brand_id: string
+          temperature_controlled: boolean | null
+          hazmat_support: boolean | null
+          fba_prep: boolean | null
+          returns_handling: boolean | null
+          kitting: boolean | null
+          subscription_fulfillment: boolean | null
+          same_day_shipping: boolean | null
+          b2b_support: boolean | null
+          edi_support: boolean | null
+          client_portal: boolean | null
+          required_integrations: string[] | null
+          required_shipping_speed: string | null
+          max_receiving_time: number | null
+          min_order_accuracy: number | null
+          min_inventory_accuracy: number | null
+          requires_real_time_tracking: boolean | null
+          prefer_no_long_term_contract: boolean | null
+          requires_transparent_pricing: boolean | null
+          requires_dedicated_manager: boolean | null
+          requires_24x7_support: boolean | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          brand_id: string
+          temperature_controlled?: boolean | null
+          hazmat_support?: boolean | null
+          fba_prep?: boolean | null
+          returns_handling?: boolean | null
+          kitting?: boolean | null
+          subscription_fulfillment?: boolean | null
+          same_day_shipping?: boolean | null
+          b2b_support?: boolean | null
+          edi_support?: boolean | null
+          client_portal?: boolean | null
+          required_integrations?: string[] | null
+          required_shipping_speed?: string | null
+          max_receiving_time?: number | null
+          min_order_accuracy?: number | null
+          min_inventory_accuracy?: number | null
+          requires_real_time_tracking?: boolean | null
+          prefer_no_long_term_contract?: boolean | null
+          requires_transparent_pricing?: boolean | null
+          requires_dedicated_manager?: boolean | null
+          requires_24x7_support?: boolean | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          brand_id?: string
+          temperature_controlled?: boolean | null
+          hazmat_support?: boolean | null
+          fba_prep?: boolean | null
+          returns_handling?: boolean | null
+          kitting?: boolean | null
+          subscription_fulfillment?: boolean | null
+          same_day_shipping?: boolean | null
+          b2b_support?: boolean | null
+          edi_support?: boolean | null
+          client_portal?: boolean | null
+          required_integrations?: string[] | null
+          required_shipping_speed?: string | null
+          max_receiving_time?: number | null
+          min_order_accuracy?: number | null
+          min_inventory_accuracy?: number | null
+          requires_real_time_tracking?: boolean | null
+          prefer_no_long_term_contract?: boolean | null
+          requires_transparent_pricing?: boolean | null
+          requires_dedicated_manager?: boolean | null
+          requires_24x7_support?: boolean | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+      }
+      brands: {
+        Row: {
+          id: string
+          user_id: string
+          brand_name: string
+          contact_name: string | null
+          contact_email: string | null
+          phone: string | null
+          industry: string | null
+          website_url: string | null
+          monthly_volume: number
+          average_order_value: number | null
+          product_types: string[] | null
+          preferred_locations: string[] | null
+          current_platform: string | null
+          current_wms: string | null
+          budget_range: string | null
+          max_setup_fee: number | null
+          timeline_to_start: string | null
+          special_requirements: string | null
+          status: string | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          brand_name: string
+          contact_name?: string | null
+          contact_email?: string | null
+          phone?: string | null
+          industry?: string | null
+          website_url?: string | null
+          monthly_volume: number
+          average_order_value?: number | null
+          product_types?: string[] | null
+          preferred_locations?: string[] | null
+          current_platform?: string | null
+          current_wms?: string | null
+          budget_range?: string | null
+          max_setup_fee?: number | null
+          timeline_to_start?: string | null
+          special_requirements?: string | null
+          status?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          brand_name?: string
+          contact_name?: string | null
+          contact_email?: string | null
+          phone?: string | null
+          industry?: string | null
+          website_url?: string | null
+          monthly_volume?: number
+          average_order_value?: number | null
+          product_types?: string[] | null
+          preferred_locations?: string[] | null
+          current_platform?: string | null
+          current_wms?: string | null
+          budget_range?: string | null
+          max_setup_fee?: number | null
+          timeline_to_start?: string | null
+          special_requirements?: string | null
+          status?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+      }
       companies: {
         Row: {
           id: string
@@ -16,10 +199,13 @@ export interface Database {
           company_name: string
           website_url: string | null
           phone: string
-          year_founded: number
-          headquarters_address: string
+          year_founded: number | null
+          headquarters_address: string | null
           created_at: string | null
           updated_at: string | null
+          is_certified: boolean | null
+          certification_date: string | null
+          certified_by: string | null
         }
         Insert: {
           id?: string
@@ -27,10 +213,13 @@ export interface Database {
           company_name: string
           website_url?: string | null
           phone: string
-          year_founded: number
-          headquarters_address: string
+          year_founded?: number | null
+          headquarters_address?: string | null
           created_at?: string | null
           updated_at?: string | null
+          is_certified?: boolean | null
+          certification_date?: string | null
+          certified_by?: string | null
         }
         Update: {
           id?: string
@@ -38,316 +227,134 @@ export interface Database {
           company_name?: string
           website_url?: string | null
           phone?: string
-          year_founded?: number
-          headquarters_address?: string
+          year_founded?: number | null
+          headquarters_address?: string | null
           created_at?: string | null
           updated_at?: string | null
+          is_certified?: boolean | null
+          certification_date?: string | null
+          certified_by?: string | null
         }
       }
-      warehouses: {
+      notifications: {
         Row: {
           id: string
+          user_id: string
+          type: Database["public"]["Enums"]["notification_type"]
+          title: string
+          message: string
+          is_read: boolean | null
+          related_entity_type: string | null
+          related_entity_id: string | null
+          metadata: Json | null
+          expires_at: string | null
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          type: Database["public"]["Enums"]["notification_type"]
+          title: string
+          message: string
+          is_read?: boolean | null
+          related_entity_type?: string | null
+          related_entity_id?: string | null
+          metadata?: Json | null
+          expires_at?: string | null
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          type?: Database["public"]["Enums"]["notification_type"]
+          title?: string
+          message?: string
+          is_read?: boolean | null
+          related_entity_type?: string | null
+          related_entity_id?: string | null
+          metadata?: Json | null
+          expires_at?: string | null
+          created_at?: string | null
+        }
+      }
+      partnerships: {
+        Row: {
+          id: string
+          brand_id: string
           company_id: string
-          address: string
-          square_footage: number
-          capabilities: string[]
+          status: Database["public"]["Enums"]["partnership_status"] | null
+          match_score: number | null
+          initiated_by: string | null
+          notes: string | null
+          started_at: string | null
+          ended_at: string | null
           created_at: string | null
           updated_at: string | null
         }
         Insert: {
           id?: string
+          brand_id: string
           company_id: string
-          address: string
-          square_footage: number
-          capabilities?: string[]
+          status?: Database["public"]["Enums"]["partnership_status"] | null
+          match_score?: number | null
+          initiated_by?: string | null
+          notes?: string | null
+          started_at?: string | null
+          ended_at?: string | null
           created_at?: string | null
           updated_at?: string | null
         }
         Update: {
           id?: string
+          brand_id?: string
           company_id?: string
-          address?: string
-          square_footage?: number
-          capabilities?: string[]
+          status?: Database["public"]["Enums"]["partnership_status"] | null
+          match_score?: number | null
+          initiated_by?: string | null
+          notes?: string | null
+          started_at?: string | null
+          ended_at?: string | null
           created_at?: string | null
           updated_at?: string | null
         }
       }
-      capabilities: {
+      user_profiles: {
         Row: {
           id: string
-          company_id: string
-          temperature_controlled: boolean
-          temperature_types: string[]
-          supports_hazmat: boolean
-          supports_fba_prep: boolean
-          handles_returns: boolean
-          offers_kitting: boolean
-          offers_subscription_fulfillment: boolean
-          offers_same_day_shipping: boolean
-          supported_marketplaces: string[]
-          supports_edi: boolean
-          supports_b2b: boolean
-          b2b_types: string[]
-          minimum_order_volume: string | null
+          user_id: string
+          user_type: Database["public"]["Enums"]["user_type"]
+          first_name: string | null
+          last_name: string | null
+          phone: string | null
+          company_name: string | null
+          avatar_url: string | null
+          is_active: boolean | null
           created_at: string | null
           updated_at: string | null
         }
         Insert: {
           id?: string
-          company_id: string
-          temperature_controlled?: boolean
-          temperature_types?: string[]
-          supports_hazmat?: boolean
-          supports_fba_prep?: boolean
-          handles_returns?: boolean
-          offers_kitting?: boolean
-          offers_subscription_fulfillment?: boolean
-          offers_same_day_shipping?: boolean
-          supported_marketplaces?: string[]
-          supports_edi?: boolean
-          supports_b2b?: boolean
-          b2b_types?: string[]
-          minimum_order_volume?: string | null
+          user_id: string
+          user_type?: Database["public"]["Enums"]["user_type"]
+          first_name?: string | null
+          last_name?: string | null
+          phone?: string | null
+          company_name?: string | null
+          avatar_url?: string | null
+          is_active?: boolean | null
           created_at?: string | null
           updated_at?: string | null
         }
         Update: {
           id?: string
-          company_id?: string
-          temperature_controlled?: boolean
-          temperature_types?: string[]
-          supports_hazmat?: boolean
-          supports_fba_prep?: boolean
-          handles_returns?: boolean
-          offers_kitting?: boolean
-          offers_subscription_fulfillment?: boolean
-          offers_same_day_shipping?: boolean
-          supported_marketplaces?: string[]
-          supports_edi?: boolean
-          supports_b2b?: boolean
-          b2b_types?: string[]
-          minimum_order_volume?: string | null
-          created_at?: string | null
-          updated_at?: string | null
-        }
-      }
-      compliance: {
-        Row: {
-          id: string
-          company_id: string
-          fda_registered: boolean
-          has_liability_insurance: boolean
-          certifications: string[]
-          other_certification: string | null
-          created_at: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          id?: string
-          company_id: string
-          fda_registered?: boolean
-          has_liability_insurance?: boolean
-          certifications?: string[]
-          other_certification?: string | null
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          id?: string
-          company_id?: string
-          fda_registered?: boolean
-          has_liability_insurance?: boolean
-          certifications?: string[]
-          other_certification?: string | null
-          created_at?: string | null
-          updated_at?: string | null
-        }
-      }
-      tech_stack: {
-        Row: {
-          id: string
-          company_id: string
-          wms_system: string
-          other_wms: string | null
-          has_client_portal: boolean
-          integrations: string[]
-          has_proprietary_software: boolean
-          proprietary_software_details: string | null
-          carriers: string[]
-          created_at: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          id?: string
-          company_id: string
-          wms_system: string
-          other_wms?: string | null
-          has_client_portal?: boolean
-          integrations?: string[]
-          has_proprietary_software?: boolean
-          proprietary_software_details?: string | null
-          carriers?: string[]
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          id?: string
-          company_id?: string
-          wms_system?: string
-          other_wms?: string | null
-          has_client_portal?: boolean
-          integrations?: string[]
-          has_proprietary_software?: boolean
-          proprietary_software_details?: string | null
-          carriers?: string[]
-          created_at?: string | null
-          updated_at?: string | null
-        }
-      }
-      performance_metrics: {
-        Row: {
-          id: string
-          company_id: string
-          average_receiving_time: number
-          max_receiving_time: number
-          notifies_on_receiving: boolean
-          cutoff_time: string | null
-          dtc_sla: string
-          b2b_sla: string | null
-          peak_season_sla: string | null
-          returns_processing_time: number | null
-          provides_branded_return_portals: boolean
-          order_accuracy_rate: string
-          inventory_accuracy_rate: string
-          cycle_counting: string
-          provides_real_time_tracking: boolean
-          billing_frequency: string
-          has_onboarding_fees: boolean
-          transparent_fees: boolean
-          has_dedicated_manager: boolean
-          response_time: string
-          support_hours: string
-          has_weekend_support: boolean
-          requires_long_term_contracts: boolean
-          provides_onboarding_support: boolean
-          has_standard_onboarding: boolean
-          created_at: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          id?: string
-          company_id: string
-          average_receiving_time: number
-          max_receiving_time: number
-          notifies_on_receiving?: boolean
-          cutoff_time?: string | null
-          dtc_sla: string
-          b2b_sla?: string | null
-          peak_season_sla?: string | null
-          returns_processing_time?: number | null
-          provides_branded_return_portals?: boolean
-          order_accuracy_rate: string
-          inventory_accuracy_rate: string
-          cycle_counting: string
-          provides_real_time_tracking?: boolean
-          billing_frequency: string
-          has_onboarding_fees?: boolean
-          transparent_fees?: boolean
-          has_dedicated_manager?: boolean
-          response_time: string
-          support_hours: string
-          has_weekend_support?: boolean
-          requires_long_term_contracts?: boolean
-          provides_onboarding_support?: boolean
-          has_standard_onboarding?: boolean
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          id?: string
-          company_id?: string
-          average_receiving_time?: number
-          max_receiving_time?: number
-          notifies_on_receiving?: boolean
-          cutoff_time?: string | null
-          dtc_sla?: string
-          b2b_sla?: string | null
-          peak_season_sla?: string | null
-          returns_processing_time?: number | null
-          provides_branded_return_portals?: boolean
-          order_accuracy_rate?: string
-          inventory_accuracy_rate?: string
-          cycle_counting?: string
-          provides_real_time_tracking?: boolean
-          billing_frequency?: string
-          has_onboarding_fees?: boolean
-          transparent_fees?: boolean
-          has_dedicated_manager?: boolean
-          response_time?: string
-          support_hours?: string
-          has_weekend_support?: boolean
-          requires_long_term_contracts?: boolean
-          provides_onboarding_support?: boolean
-          has_standard_onboarding?: boolean
-          created_at?: string | null
-          updated_at?: string | null
-        }
-      }
-      customer_references: {
-        Row: {
-          id: string
-          company_id: string
-          brand_name: string
-          website: string
-          contact_email: string
-          created_at: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          id?: string
-          company_id: string
-          brand_name: string
-          website: string
-          contact_email: string
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          id?: string
-          company_id?: string
-          brand_name?: string
-          website?: string
-          contact_email?: string
-          created_at?: string | null
-          updated_at?: string | null
-        }
-      }
-      media_assets: {
-        Row: {
-          id: string
-          company_id: string
-          logo_url: string | null
-          warehouse_image_urls: string[]
-          intro_video_url: string | null
-          created_at: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          id?: string
-          company_id: string
-          logo_url?: string | null
-          warehouse_image_urls?: string[]
-          intro_video_url?: string | null
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          id?: string
-          company_id?: string
-          logo_url?: string | null
-          warehouse_image_urls?: string[]
-          intro_video_url?: string | null
+          user_id?: string
+          user_type?: Database["public"]["Enums"]["user_type"]
+          first_name?: string | null
+          last_name?: string | null
+          phone?: string | null
+          company_name?: string | null
+          avatar_url?: string | null
+          is_active?: boolean | null
           created_at?: string | null
           updated_at?: string | null
         }
@@ -360,6 +367,11 @@ export interface Database {
       [_ in never]: never
     }
     Enums: {
+      user_type: "brand" | "3pl" | "admin"
+      partnership_status: "pending" | "active" | "paused" | "terminated"
+      notification_type: "match_found" | "partnership_request" | "certification_update" | "system_update"
+    }
+    CompositeTypes: {
       [_ in never]: never
     }
   }
