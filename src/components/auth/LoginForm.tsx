@@ -23,21 +23,17 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToSignup }) =>
     try {
       await login(email, password);
       onSuccess();
-    } catch (err) {
-      setError('Invalid email or password');
+    } catch (err: any) {
+      console.error('Login error:', err);
+      setError('Invalid email or password. Please check your credentials and try again.');
     }
   };
 
   const handleGoogleLogin = async () => {
-    // Simulate Google OAuth flow
+    setError('');
     try {
-      setError('');
-      // In a real app, this would redirect to Google OAuth
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Mock successful Google login
-      await login('user@gmail.com', 'google-oauth');
-      onSuccess();
+      // For now, show a message that Google login is not implemented
+      setError('Google login is not yet implemented. Please use email and password to sign in, or create a new account.');
     } catch (err) {
       setError('Google login failed. Please try again.');
     }
