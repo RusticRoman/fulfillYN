@@ -3,13 +3,13 @@ import { Menu, X, ArrowLeft, Truck } from 'lucide-react';
 import Button from '../ui/Button';
 
 interface HeaderProps {
-  onSignupClick?: () => void;
+  onGetStartedClick?: () => void;
   onLoginClick?: () => void;
   onBack?: () => void;
   showBackButton?: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({ onSignupClick, onLoginClick, onBack, showBackButton }) => {
+const Header: React.FC<HeaderProps> = ({ onGetStartedClick, onLoginClick, onBack, showBackButton }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
@@ -50,7 +50,7 @@ const Header: React.FC<HeaderProps> = ({ onSignupClick, onLoginClick, onBack, sh
               {/* Desktop CTA */}
               <div className="hidden md:flex items-center space-x-4">
                 <Button variant="outline" onClick={onLoginClick}>Log In</Button>
-                <Button>Get Started</Button>
+                <Button onClick={onGetStartedClick}>Get Started</Button>
               </div>
 
               {/* Mobile menu button */}
@@ -81,7 +81,7 @@ const Header: React.FC<HeaderProps> = ({ onSignupClick, onLoginClick, onBack, sh
               </a>
               <div className="border-t border-gray-200 pt-4 flex flex-col space-y-2">
                 <Button variant="outline" className="w-full" onClick={onLoginClick}>Log In</Button>
-                <Button className="w-full">Get Started</Button>
+                <Button className="w-full" onClick={onGetStartedClick}>Get Started</Button>
               </div>
             </div>
           </div>

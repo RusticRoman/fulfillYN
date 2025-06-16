@@ -2,7 +2,11 @@ import React from 'react';
 import { ArrowRight, Play, CheckCircle } from 'lucide-react';
 import Button from '../ui/Button';
 
-const Hero: React.FC = () => {
+interface HeroProps {
+  onGetStartedClick?: () => void;
+}
+
+const Hero: React.FC<HeroProps> = ({ onGetStartedClick }) => {
   return (
     <section className="relative bg-gradient-to-br from-blue-50 via-white to-purple-50 pt-16 pb-20 overflow-hidden">
       {/* Background decoration */}
@@ -30,7 +34,11 @@ const Hero: React.FC = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
-              <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+              <Button 
+                size="lg" 
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                onClick={onGetStartedClick}
+              >
                 Find 3PL Partners
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>

@@ -6,9 +6,10 @@ import { useAuth } from '../../context/AuthContext';
 
 interface LoginFormProps {
   onSuccess: () => void;
+  onSwitchToSignup?: () => void;
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
+const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToSignup }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -164,9 +165,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
           <div className="mt-8 text-center">
             <p className="text-sm text-gray-600">
               Don't have an account?{' '}
-              <a href="#" className="text-blue-600 hover:text-blue-500 font-medium">
+              <button 
+                onClick={onSwitchToSignup}
+                className="text-blue-600 hover:text-blue-500 font-medium"
+              >
                 Sign up
-              </a>
+              </button>
             </p>
           </div>
         </div>

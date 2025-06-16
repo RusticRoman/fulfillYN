@@ -11,15 +11,20 @@ import Pricing from './components/sections/Pricing';
 import FAQ from './components/sections/FAQ';
 import Footer from './components/layout/Footer';
 import LoginForm from './components/auth/LoginForm';
+import SignupForm from './components/auth/SignupForm';
 import UserCabinet from './components/dashboard/UserCabinet';
 
-type AppView = 'home' | 'login' | 'cabinet' | '3pl-form';
+type AppView = 'home' | 'login' | 'signup' | 'cabinet' | '3pl-form';
 
 function AppContent() {
   const [currentView, setCurrentView] = useState<AppView>('home');
   const { isAuthenticated, user, setUserType } = useAuth();
 
   const handleLoginSuccess = () => {
+    setCurrentView('cabinet');
+  };
+
+  const handleSignupSuccess = () => {
     setCurrentView('cabinet');
   };
 
@@ -37,9 +42,24 @@ function AppContent() {
     setCurrentView('home');
   };
 
+  // Signup page
+  if (currentView === 'signup') {
+    return (
+      <SignupForm 
+        onSuccess={handleSignupSuccess}
+        onSwitchToLogin={() => setCurrentView('login')}
+      />
+    );
+  }
+
   // Login page
   if (currentView === 'login') {
-    return <LoginForm onSuccess={handleLoginSuccess} />;
+    return (
+      <LoginForm 
+        onSuccess={handleLoginSuccess}
+        onSwitchToSignup={() => setCurrentView('signup')}
+      />
+    );
   }
 
   // User cabinet (after login, before selecting user type)
@@ -77,20 +97,14 @@ function AppContent() {
   return (
     <div className="min-h-screen bg-white">
       <Header 
-        onSignupClick={() => {
-          if (isAuthenticated) {
-            setCurrentView('cabinet');
-          } else {
-            setCurrentView('login');
-          }
-        }}
+        onGetStartedClick={() => setCurrentView('signup')}
         onLoginClick={() => setCurrentView('login')}
       />
-      <Hero />
+      <Hero onGetStartedClick={() => setCurrentView('signup')} />
       <Features />
       <HowItWorks />
       <Testimonials />
-      <Pricing />
+      <Pricing onGetStartedClick={() => setCurrentView('signup')} />
       <FAQ />
       <Footer />
     </div>
