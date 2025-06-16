@@ -1,5 +1,5 @@
 export interface FormData {
-  // Basic Contact Info
+  // 3PL Contact Info (all optional)
   firstName: string;
   lastName: string;
   email: string;
@@ -7,13 +7,7 @@ export interface FormData {
   companyName: string;
   websiteUrl: string;
 
-  // Company Overview
-  yearFounded: string;
-  headquartersAddress: string;
-  totalWarehouses: number;
-  warehouseLocations: WarehouseLocation[];
-
-  // Warehouse & Capabilities
+  // Warehouse & Capabilities (mandatory minimum order volume)
   temperatureControlled: boolean;
   temperatureTypes: string[];
   supportsHazmat: boolean;
@@ -22,19 +16,18 @@ export interface FormData {
   offersKitting: boolean;
   offersSubscriptionFulfillment: boolean;
   offersSameDayShipping: boolean;
-  supportedMarketplaces: string[];
   supportsEdi: boolean;
   supportsB2b: boolean;
   b2bTypes: string[];
-  minimumOrderVolume: string;
+  minimumOrderVolume: number; // Changed to number and mandatory
 
-  // Insurance & Compliance
+  // Insurance & Compliance (moved to capabilities)
   fdaRegistered: boolean;
   hasLiabilityInsurance: boolean;
   certifications: string[];
   otherCertification: string;
 
-  // Tech & Integrations
+  // Tech & Integrations (moved to capabilities)
   wmsSystem: string;
   otherWms: string;
   hasClientPortal: boolean;
@@ -43,7 +36,7 @@ export interface FormData {
   proprietarySoftwareDetails: string;
   carriers: string[];
 
-  // SLA & Performance Metrics
+  // SLA & Performance Metrics (moved to capabilities, all optional)
   averageReceivingTime: number;
   maxReceivingTime: number;
   notifiesOnReceiving: boolean;
@@ -54,11 +47,11 @@ export interface FormData {
   b2bSla: string;
   peakSeasonSla: string;
   
-  // Returns
+  // Returns (moved to capabilities, all optional)
   returnsProcessingTime: number;
   providesBrandedReturnPortals: boolean;
   
-  // Accuracy & Reporting
+  // Accuracy & Reporting (moved to capabilities, all optional)
   orderAccuracyRate: string;
   inventoryAccuracyRate: string;
   cycleCounting: string;
@@ -67,7 +60,7 @@ export interface FormData {
   hasOnboardingFees: boolean;
   transparentFees: boolean;
   
-  // Support & Communication
+  // Support & Communication (moved to capabilities, all optional)
   hasDedicatedManager: boolean;
   responseTime: string;
   supportHours: string;
@@ -85,12 +78,6 @@ export interface FormData {
   introVideo: string;
 }
 
-export interface WarehouseLocation {
-  address: string;
-  squareFootage: number;
-  capabilities: string[];
-}
-
 export interface Reference {
   brandName: string;
   website: string;
@@ -99,14 +86,7 @@ export interface Reference {
 
 export type FormSection = 
   | 'contact'
-  | 'company'
   | 'capabilities'
-  | 'insurance'
-  | 'tech'
-  | 'sla'
-  | 'returns'
-  | 'accuracy'
-  | 'support'
   | 'references'
   | 'media'
   | 'review';
@@ -119,19 +99,13 @@ export interface FormState {
 }
 
 export const initialFormData: FormData = {
-  // Basic Contact Info
+  // 3PL Contact Info (all optional)
   firstName: '',
   lastName: '',
   email: '',
   phone: '',
   companyName: '',
   websiteUrl: '',
-
-  // Company Overview
-  yearFounded: '',
-  headquartersAddress: '',
-  totalWarehouses: 1,
-  warehouseLocations: [{ address: '', squareFootage: 0, capabilities: [] }],
 
   // Warehouse & Capabilities
   temperatureControlled: false,
@@ -142,11 +116,10 @@ export const initialFormData: FormData = {
   offersKitting: false,
   offersSubscriptionFulfillment: false,
   offersSameDayShipping: false,
-  supportedMarketplaces: [],
   supportsEdi: false,
   supportsB2b: false,
   b2bTypes: [],
-  minimumOrderVolume: '',
+  minimumOrderVolume: 11, // Default to minimum valid value
 
   // Insurance & Compliance
   fdaRegistered: false,

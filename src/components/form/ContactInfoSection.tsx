@@ -17,7 +17,7 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({
   setFieldTouched,
 }) => {
   return (
-    <Card title="Basic Contact Information" className="mb-6 animate-fadeIn">
+    <Card title="3PL Contact Information" className="mb-6 animate-fadeIn">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Input
           id="firstName"
@@ -26,7 +26,6 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({
           onChange={(e) => onChange('firstName', e.target.value)}
           onBlur={() => setFieldTouched('firstName')}
           error={errors.firstName}
-          required
         />
         <Input
           id="lastName"
@@ -35,19 +34,17 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({
           onChange={(e) => onChange('lastName', e.target.value)}
           onBlur={() => setFieldTouched('lastName')}
           error={errors.lastName}
-          required
         />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Input
           id="email"
-          label="Email Address"
+          label="Corporate email"
           type="email"
           value={formData.email}
           onChange={(e) => onChange('email', e.target.value)}
           onBlur={() => setFieldTouched('email')}
           error={errors.email}
-          required
         />
         <Input
           id="phone"
@@ -57,7 +54,6 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({
           onChange={(e) => onChange('phone', e.target.value)}
           onBlur={() => setFieldTouched('phone')}
           error={errors.phone}
-          required
         />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
@@ -68,7 +64,6 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({
           onChange={(e) => onChange('companyName', e.target.value)}
           onBlur={() => setFieldTouched('companyName')}
           error={errors.companyName}
-          required
         />
         <Input
           id="websiteUrl"
@@ -79,7 +74,6 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({
           onBlur={() => setFieldTouched('websiteUrl')}
           error={errors.websiteUrl}
           placeholder="https://example.com"
-          required
         />
       </div>
     </Card>

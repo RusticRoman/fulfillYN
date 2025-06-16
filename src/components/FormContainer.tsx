@@ -3,14 +3,7 @@ import { useFormContext } from '../context/FormContext';
 import ProgressBar from './ui/ProgressBar';
 import Button from './ui/Button';
 import ContactInfoSection from './form/ContactInfoSection';
-import CompanyOverviewSection from './form/CompanyOverviewSection';
 import CapabilitiesSection from './form/CapabilitiesSection';
-import InsuranceSection from './form/InsuranceSection';
-import TechIntegrationsSection from './form/TechIntegrationsSection';
-import SlaSection from './form/SlaSection';
-import ReturnsSection from './form/ReturnsSection';
-import AccuracySection from './form/AccuracySection';
-import SupportSection from './form/SupportSection';
 import ReferencesSection from './form/ReferencesSection';
 import MediaUploadsSection from './form/MediaUploadsSection';
 import FormReviewSection from './form/FormReviewSection';
@@ -32,14 +25,7 @@ const FormContainer: React.FC = () => {
 
   const steps = [
     'Contact',
-    'Company',
     'Capabilities',
-    'Insurance',
-    'Tech',
-    'SLA',
-    'Returns',
-    'Accuracy',
-    'Support',
     'References',
     'Media',
     'Review'
@@ -62,7 +48,7 @@ const FormContainer: React.FC = () => {
         );
       case 1:
         return (
-          <CompanyOverviewSection 
+          <CapabilitiesSection 
             formData={data} 
             onChange={updateFormData} 
             errors={errors} 
@@ -71,7 +57,7 @@ const FormContainer: React.FC = () => {
         );
       case 2:
         return (
-          <CapabilitiesSection 
+          <ReferencesSection 
             formData={data} 
             onChange={updateFormData} 
             errors={errors} 
@@ -80,69 +66,6 @@ const FormContainer: React.FC = () => {
         );
       case 3:
         return (
-          <InsuranceSection 
-            formData={data} 
-            onChange={updateFormData} 
-            errors={errors} 
-            setFieldTouched={setFieldTouched} 
-          />
-        );
-      case 4:
-        return (
-          <TechIntegrationsSection 
-            formData={data} 
-            onChange={updateFormData} 
-            errors={errors} 
-            setFieldTouched={setFieldTouched} 
-          />
-        );
-      case 5:
-        return (
-          <SlaSection 
-            formData={data} 
-            onChange={updateFormData} 
-            errors={errors} 
-            setFieldTouched={setFieldTouched} 
-          />
-        );
-      case 6:
-        return (
-          <ReturnsSection 
-            formData={data} 
-            onChange={updateFormData} 
-            errors={errors} 
-            setFieldTouched={setFieldTouched} 
-          />
-        );
-      case 7:
-        return (
-          <AccuracySection 
-            formData={data} 
-            onChange={updateFormData} 
-            errors={errors} 
-            setFieldTouched={setFieldTouched} 
-          />
-        );
-      case 8:
-        return (
-          <SupportSection 
-            formData={data} 
-            onChange={updateFormData} 
-            errors={errors} 
-            setFieldTouched={setFieldTouched} 
-          />
-        );
-      case 9:
-        return (
-          <ReferencesSection 
-            formData={data} 
-            onChange={updateFormData} 
-            errors={errors} 
-            setFieldTouched={setFieldTouched} 
-          />
-        );
-      case 10:
-        return (
           <MediaUploadsSection 
             formData={data} 
             onChange={updateFormData} 
@@ -150,7 +73,7 @@ const FormContainer: React.FC = () => {
             setFieldTouched={setFieldTouched} 
           />
         );
-      case 11:
+      case 4:
         return <FormReviewSection formData={data} />;
       default:
         return null;

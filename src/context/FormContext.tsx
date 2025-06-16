@@ -50,23 +50,11 @@ export const FormProvider: React.FC<FormProviderProps> = ({ children }) => {
   const isStepValid = (step: number): boolean => {
     // Define which fields belong to each step
     const stepFields: Record<number, string[]> = {
-      0: ['firstName', 'lastName', 'email', 'phone', 'companyName', 'websiteUrl'],
-      1: ['yearFounded', 'headquartersAddress', 'totalWarehouses'],
-      2: ['temperatureControlled', 'supportsHazmat', 'supportsFbaProp', 'handlesReturns',
-         'offersKitting', 'offersSubscriptionFulfillment', 'offersSameDayShipping', 
-         'supportedMarketplaces', 'supportsEdi', 'supportsB2b', 'minimumOrderVolume'],
-      3: ['fdaRegistered', 'hasLiabilityInsurance', 'certifications'],
-      4: ['wmsSystem', 'hasClientPortal', 'integrations', 'carriers'],
-      5: ['averageReceivingTime', 'maxReceivingTime', 'notifiesOnReceiving', 
-         'cutoffTime', 'dtcSla', 'b2bSla', 'peakSeasonSla'],
-      6: ['returnsProcessingTime', 'providesBrandedReturnPortals'],
-      7: ['orderAccuracyRate', 'inventoryAccuracyRate', 'cycleCounting', 
-         'providesRealTimeTracking', 'billingFrequency', 'hasOnboardingFees', 'transparentFees'],
-      8: ['hasDedicatedManager', 'responseTime', 'supportHours', 'hasWeekendSupport', 
-         'requiresLongTermContracts', 'providesOnboardingSupport'],
-      9: ['references'],
-      10: ['logo', 'warehouseImages', 'introVideo'],
-      11: [] // Review step - no validation needed
+      0: [], // Contact info is all optional now
+      1: ['minimumOrderVolume'], // Only minimum order volume is mandatory in capabilities
+      2: ['references'], // References are required
+      3: [], // Media uploads are optional
+      4: [] // Review step - no validation needed
     };
 
     const fieldsToCheck = stepFields[step] || [];
@@ -82,23 +70,11 @@ export const FormProvider: React.FC<FormProviderProps> = ({ children }) => {
   const validateCurrentStep = (): boolean => {
     // Touch all fields in current step to show any validation errors
     const stepFields: Record<number, string[]> = {
-      0: ['firstName', 'lastName', 'email', 'phone', 'companyName', 'websiteUrl'],
-      1: ['yearFounded', 'headquartersAddress', 'totalWarehouses'],
-      2: ['temperatureControlled', 'supportsHazmat', 'supportsFbaProp', 'handlesReturns',
-         'offersKitting', 'offersSubscriptionFulfillment', 'offersSameDayShipping', 
-         'supportedMarketplaces', 'supportsEdi', 'supportsB2b', 'minimumOrderVolume'],
-      3: ['fdaRegistered', 'hasLiabilityInsurance', 'certifications'],
-      4: ['wmsSystem', 'hasClientPortal', 'integrations', 'carriers'],
-      5: ['averageReceivingTime', 'maxReceivingTime', 'notifiesOnReceiving', 
-         'cutoffTime', 'dtcSla', 'b2bSla', 'peakSeasonSla'],
-      6: ['returnsProcessingTime', 'providesBrandedReturnPortals'],
-      7: ['orderAccuracyRate', 'inventoryAccuracyRate', 'cycleCounting', 
-         'providesRealTimeTracking', 'billingFrequency', 'hasOnboardingFees', 'transparentFees'],
-      8: ['hasDedicatedManager', 'responseTime', 'supportHours', 'hasWeekendSupport', 
-         'requiresLongTermContracts', 'providesOnboardingSupport'],
-      9: ['references'],
-      10: ['logo', 'warehouseImages', 'introVideo'],
-      11: [] // Review step - no validation needed
+      0: [], // Contact info is all optional
+      1: ['minimumOrderVolume'], // Only minimum order volume is mandatory
+      2: ['references'],
+      3: [],
+      4: []
     };
     
     const currentStepFields = stepFields[formState.currentStep] || [];
