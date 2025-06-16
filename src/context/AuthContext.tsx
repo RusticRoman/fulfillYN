@@ -4,7 +4,7 @@ import { User, AuthState } from '../types/authTypes';
 interface AuthContextType extends AuthState {
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
-  setUserType: (type: 'brand' | '3pl') => void;
+  setUserType: (type: 'brand' | '3pl' | 'admin') => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -54,7 +54,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     });
   };
 
-  const setUserType = (type: 'brand' | '3pl') => {
+  const setUserType = (type: 'brand' | '3pl' | 'admin') => {
     if (authState.user) {
       setAuthState(prev => ({
         ...prev,

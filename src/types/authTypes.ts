@@ -3,7 +3,7 @@ export interface User {
   email: string;
   firstName: string;
   lastName: string;
-  userType?: 'brand' | '3pl';
+  userType?: 'brand' | '3pl' | 'admin';
 }
 
 export interface AuthState {

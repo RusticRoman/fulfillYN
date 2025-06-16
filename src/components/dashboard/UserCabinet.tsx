@@ -1,10 +1,10 @@
 import React from 'react';
-import { User, Building2, ArrowRight, Settings, LogOut } from 'lucide-react';
+import { User, Building2, Shield, ArrowRight, Settings, LogOut } from 'lucide-react';
 import Button from '../ui/Button';
 import { useAuth } from '../../context/AuthContext';
 
 interface UserCabinetProps {
-  onSelectUserType: (type: 'brand' | '3pl') => void;
+  onSelectUserType: (type: 'brand' | '3pl' | 'admin') => void;
   onLogout: () => void;
 }
 
@@ -44,7 +44,7 @@ const UserCabinet: React.FC<UserCabinetProps> = ({ onSelectUserType, onLogout })
       </header>
 
       {/* Main Content */}
-      <main className="max-w-4xl mx-auto px-4 py-12 sm:px-6">
+      <main className="max-w-5xl mx-auto px-4 py-12 sm:px-6">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">Choose Your Path</h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
@@ -52,7 +52,7 @@ const UserCabinet: React.FC<UserCabinetProps> = ({ onSelectUserType, onLogout })
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+        <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
           {/* 3PL Option */}
           <div className="group bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border border-gray-100 overflow-hidden">
             <div className="p-8">
@@ -122,6 +122,43 @@ const UserCabinet: React.FC<UserCabinetProps> = ({ onSelectUserType, onLogout })
                 className="w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 group"
               >
                 Continue as Brand
+                <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </div>
+          </div>
+
+          {/* Admin Option */}
+          <div className="group bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border border-gray-100 overflow-hidden">
+            <div className="p-8">
+              <div className="w-16 h-16 bg-gradient-to-r from-emerald-600 to-emerald-700 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                <Shield className="w-8 h-8 text-white" />
+              </div>
+              
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">I'm an Admin</h3>
+              <p className="text-gray-600 mb-6 leading-relaxed">
+                Manage the FulfillYN platform. Oversee brands and 3PL providers, handle certifications, and maintain platform quality.
+              </p>
+              
+              <ul className="space-y-2 mb-8">
+                <li className="flex items-center text-sm text-gray-600">
+                  <div className="w-2 h-2 bg-emerald-500 rounded-full mr-3"></div>
+                  Manage all users
+                </li>
+                <li className="flex items-center text-sm text-gray-600">
+                  <div className="w-2 h-2 bg-emerald-500 rounded-full mr-3"></div>
+                  Certify 3PL partners
+                </li>
+                <li className="flex items-center text-sm text-gray-600">
+                  <div className="w-2 h-2 bg-emerald-500 rounded-full mr-3"></div>
+                  Platform analytics
+                </li>
+              </ul>
+              
+              <Button 
+                onClick={() => onSelectUserType('admin')}
+                className="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 group"
+              >
+                Continue as Admin
                 <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Button>
             </div>
