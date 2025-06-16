@@ -2,6 +2,10 @@ import React from 'react';
 import { Check, Star } from 'lucide-react';
 import Button from '../ui/Button';
 
+interface PricingProps {
+  onGetStartedClick?: () => void;
+}
+
 const plans = [
   {
     name: 'Starter',
@@ -49,7 +53,7 @@ const plans = [
   }
 ];
 
-const Pricing: React.FC = () => {
+const Pricing: React.FC<PricingProps> = ({ onGetStartedClick }) => {
   return (
     <section id="pricing" className="py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -94,6 +98,7 @@ const Pricing: React.FC = () => {
                       ? 'bg-blue-600 hover:bg-blue-700' 
                       : 'bg-gray-900 hover:bg-gray-800'
                   }`}
+                  onClick={onGetStartedClick}
                 >
                   {plan.name === 'Enterprise' ? 'Contact Sales' : 'Get Started'}
                 </Button>
