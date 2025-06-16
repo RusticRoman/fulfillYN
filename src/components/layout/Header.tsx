@@ -4,11 +4,12 @@ import Button from '../ui/Button';
 
 interface HeaderProps {
   onSignupClick?: () => void;
+  onLoginClick?: () => void;
   onBack?: () => void;
   showBackButton?: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({ onSignupClick, onBack, showBackButton }) => {
+const Header: React.FC<HeaderProps> = ({ onSignupClick, onLoginClick, onBack, showBackButton }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSignupOpen, setIsSignupOpen] = useState(false);
 
@@ -77,7 +78,7 @@ const Header: React.FC<HeaderProps> = ({ onSignupClick, onBack, showBackButton }
 
               {/* Desktop CTA */}
               <div className="hidden md:flex items-center space-x-4">
-                <Button variant="outline">Login</Button>
+                <Button variant="outline" onClick={onLoginClick}>Log In</Button>
                 <Button>Get Started</Button>
               </div>
 
@@ -123,7 +124,7 @@ const Header: React.FC<HeaderProps> = ({ onSignupClick, onBack, showBackButton }
                 </a>
               </div>
               <div className="border-t border-gray-200 pt-4 flex flex-col space-y-2">
-                <Button variant="outline" className="w-full">Login</Button>
+                <Button variant="outline" className="w-full" onClick={onLoginClick}>Log In</Button>
                 <Button className="w-full">Get Started</Button>
               </div>
             </div>
