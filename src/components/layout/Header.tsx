@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Menu, X, ChevronDown, ArrowLeft, Truck } from 'lucide-react';
+import { Menu, X, ArrowLeft, Truck } from 'lucide-react';
 import Button from '../ui/Button';
 
 interface HeaderProps {
@@ -11,7 +11,6 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ onSignupClick, onLoginClick, onBack, showBackButton }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isSignupOpen, setIsSignupOpen] = useState(false);
 
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">
@@ -46,34 +45,6 @@ const Header: React.FC<HeaderProps> = ({ onSignupClick, onLoginClick, onBack, sh
                 <a href="#pricing" className="text-gray-700 hover:text-blue-600 transition-colors">
                   Pricing
                 </a>
-                <div className="relative">
-                  <button
-                    onClick={() => setIsSignupOpen(!isSignupOpen)}
-                    className="flex items-center text-gray-700 hover:text-blue-600 transition-colors"
-                  >
-                    Signup
-                    <ChevronDown className="ml-1 h-4 w-4" />
-                  </button>
-                  {isSignupOpen && (
-                    <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 py-2">
-                      <button
-                        onClick={() => {
-                          onSignupClick?.();
-                          setIsSignupOpen(false);
-                        }}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600"
-                      >
-                        Become a 3PL Partner
-                      </button>
-                      <a
-                        href="#"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600"
-                      >
-                        Brand Signup
-                      </a>
-                    </div>
-                  )}
-                </div>
               </nav>
 
               {/* Desktop CTA */}
@@ -108,21 +79,6 @@ const Header: React.FC<HeaderProps> = ({ onSignupClick, onLoginClick, onBack, sh
               <a href="#pricing" className="text-gray-700 hover:text-blue-600 transition-colors">
                 Pricing
               </a>
-              <div className="border-t border-gray-200 pt-4">
-                <p className="text-sm font-medium text-gray-900 mb-2">Signup</p>
-                <button
-                  onClick={() => {
-                    onSignupClick?.();
-                    setIsMenuOpen(false);
-                  }}
-                  className="block w-full text-left text-gray-700 hover:text-blue-600 transition-colors mb-2"
-                >
-                  Become a 3PL Partner
-                </button>
-                <a href="#" className="block text-gray-700 hover:text-blue-600 transition-colors">
-                  Brand Signup
-                </a>
-              </div>
               <div className="border-t border-gray-200 pt-4 flex flex-col space-y-2">
                 <Button variant="outline" className="w-full" onClick={onLoginClick}>Log In</Button>
                 <Button className="w-full">Get Started</Button>
