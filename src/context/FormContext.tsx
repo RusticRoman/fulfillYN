@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { FormData, initialFormData } from '../types/formTypes';
 import { useFormValidation } from '../hooks/useFormValidation';
+import { DatabaseService } from '../services/DatabaseService';
 
 interface FormState {
   data: FormData;
@@ -17,6 +18,7 @@ interface FormContextType {
   submitForm: () => Promise<void>;
   isSubmitting: boolean;
   isSubmitted: boolean;
+  submitError: string | null;
 }
 
 // Create the context with a default value
@@ -34,8 +36,10 @@ export const FormProvider: React.FC<FormProviderProps> = ({ children }) => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   
   const { errors, isFormValid, setFieldTouched, touchAll, touched } = useFormValidation(formState.data);
+  const databaseService = new DatabaseService();
 
   const updateFormData = (name: string, value: any) => {
     setFormState(prevState => ({
@@ -49,20 +53,26 @@ export const FormProvider: React.FC<FormProviderProps> = ({ children }) => {
 
   const submitForm = async (): Promise<void> => {
     touchAll(); // Touch all fields to show any validation errors
+    setSubmitError(null);
     
     if (isFormValid) {
       setIsSubmitting(true);
       try {
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        console.log("Form submitted successfully", formState.data);
+        console.log("Submitting form data to Supabase:", formState.data);
+        
+        // Create the company profile in Supabase
+        const result = await databaseService.createCompanyProfile(formState.data);
+        
+        console.log("Form submitted successfully to Supabase:", result);
         setIsSubmitted(true);
       } catch (error) {
         console.error("Form submission failed:", error);
-        // Handle error appropriately
+        setSubmitError(error instanceof Error ? error.message : 'Failed to submit form. Please try again.');
       } finally {
         setIsSubmitting(false);
       }
+    } else {
+      console.log("Form validation failed:", errors);
     }
   };
 
@@ -74,7 +84,8 @@ export const FormProvider: React.FC<FormProviderProps> = ({ children }) => {
       isFormValid,
       submitForm,
       isSubmitting,
-      isSubmitted
+      isSubmitted,
+      submitError
     }}>
       {children}
     </FormContext.Provider>

@@ -7,155 +7,250 @@ export class DatabaseService {
       companyName,
       websiteUrl,
       phone,
-      yearFounded,
-      headquartersAddress,
-      warehouseLocations,
+      firstName,
+      lastName,
+      email,
+      temperatureControlled,
+      temperatureTypes,
+      supportsHazmat,
+      supportsFbaProp,
+      handlesReturns,
+      offersKitting,
+      offersSubscriptionFulfillment,
+      offersSameDayShipping,
+      supportsEdi,
+      supportsB2b,
+      b2bTypes,
+      minimumOrderVolume,
+      fdaRegistered,
+      hasLiabilityInsurance,
+      certifications,
+      otherCertification,
+      wmsSystem,
+      otherWms,
+      hasClientPortal,
+      integrations,
+      hasProprietarySoftware,
+      proprietarySoftwareDetails,
+      carriers,
+      averageReceivingTime,
+      maxReceivingTime,
+      notifiesOnReceiving,
+      cutoffTime,
+      dtcSla,
+      b2bSla,
+      peakSeasonSla,
+      returnsProcessingTime,
+      providesBrandedReturnPortals,
+      orderAccuracyRate,
+      inventoryAccuracyRate,
+      cycleCounting,
+      providesRealTimeTracking,
+      billingFrequency,
+      hasOnboardingFees,
+      transparentFees,
+      hasDedicatedManager,
+      responseTime,
+      supportHours,
+      hasWeekendSupport,
+      requiresLongTermContracts,
+      providesOnboardingSupport,
+      hasStandardOnboarding,
+      references,
+      introVideo,
       ...rest
     } = formData;
 
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('No authenticated user');
+    if (!user) {
+      throw new Error('You must be logged in to submit this form');
+    }
 
-    // Start a transaction by using a single connection
-    const { data: company, error: companyError } = await supabase
-      .from('companies')
-      .insert({
-        user_id: user.id,
-        company_name: companyName,
-        website_url: websiteUrl,
-        phone,
-        year_founded: parseInt(yearFounded),
-        headquarters_address: headquartersAddress,
-      })
-      .select()
-      .single();
+    console.log('Current user:', user);
 
-    if (companyError) throw companyError;
+    try {
+      // 1. Create or update company record
+      const { data: company, error: companyError } = await supabase
+        .from('companies')
+        .upsert({
+          user_id: user.id,
+          company_name: companyName || 'Unnamed Company',
+          website_url: websiteUrl || null,
+          phone: phone || 'Not provided',
+          year_founded: new Date().getFullYear(), // Default to current year if not provided
+          headquarters_address: 'Not provided', // Default value
+        }, {
+          onConflict: 'user_id'
+        })
+        .select()
+        .single();
 
-    // Insert warehouses
-    const warehouseInserts = warehouseLocations.map(location => ({
-      company_id: company.id,
-      address: location.address,
-      square_footage: location.squareFootage,
-      capabilities: location.capabilities,
-    }));
+      if (companyError) {
+        console.error('Company creation error:', companyError);
+        throw new Error(`Failed to create company: ${companyError.message}`);
+      }
 
-    const { error: warehousesError } = await supabase
-      .from('warehouses')
-      .insert(warehouseInserts);
+      console.log('Company created:', company);
 
-    if (warehousesError) throw warehousesError;
+      // 2. Create capabilities record
+      const { error: capabilitiesError } = await supabase
+        .from('capabilities')
+        .upsert({
+          company_id: company.id,
+          temperature_controlled: temperatureControlled,
+          temperature_types: temperatureTypes,
+          supports_hazmat: supportsHazmat,
+          supports_fba_prep: supportsFbaProp,
+          handles_returns: handlesReturns,
+          offers_kitting: offersKitting,
+          offers_subscription_fulfillment: offersSubscriptionFulfillment,
+          offers_same_day_shipping: offersSameDayShipping,
+          supports_edi: supportsEdi,
+          supports_b2b: supportsB2b,
+          b2b_types: b2bTypes,
+          minimum_order_volume: minimumOrderVolume.toString(),
+        }, {
+          onConflict: 'company_id'
+        });
 
-    // Insert capabilities
-    const { error: capabilitiesError } = await supabase
-      .from('capabilities')
-      .insert({
-        company_id: company.id,
-        temperature_controlled: rest.temperatureControlled,
-        temperature_types: rest.temperatureTypes,
-        supports_hazmat: rest.supportsHazmat,
-        supports_fba_prep: rest.supportsFbaProp,
-        handles_returns: rest.handlesReturns,
-        offers_kitting: rest.offersKitting,
-        offers_subscription_fulfillment: rest.offersSubscriptionFulfillment,
-        offers_same_day_shipping: rest.offersSameDayShipping,
-        supported_marketplaces: rest.supportedMarketplaces,
-        supports_edi: rest.supportsEdi,
-        supports_b2b: rest.supportsB2b,
-        b2b_types: rest.b2bTypes,
-        minimum_order_volume: rest.minimumOrderVolume,
-      });
+      if (capabilitiesError) {
+        console.error('Capabilities creation error:', capabilitiesError);
+        throw new Error(`Failed to create capabilities: ${capabilitiesError.message}`);
+      }
 
-    if (capabilitiesError) throw capabilitiesError;
+      // 3. Create compliance record
+      const { error: complianceError } = await supabase
+        .from('compliance')
+        .upsert({
+          company_id: company.id,
+          fda_registered: fdaRegistered,
+          has_liability_insurance: hasLiabilityInsurance,
+          certifications: certifications,
+          other_certification: otherCertification || null,
+        }, {
+          onConflict: 'company_id'
+        });
 
-    // Insert compliance
-    const { error: complianceError } = await supabase
-      .from('compliance')
-      .insert({
-        company_id: company.id,
-        fda_registered: rest.fdaRegistered,
-        has_liability_insurance: rest.hasLiabilityInsurance,
-        certifications: rest.certifications,
-        other_certification: rest.otherCertification,
-      });
+      if (complianceError) {
+        console.error('Compliance creation error:', complianceError);
+        throw new Error(`Failed to create compliance: ${complianceError.message}`);
+      }
 
-    if (complianceError) throw complianceError;
+      // 4. Create tech stack record
+      const { error: techStackError } = await supabase
+        .from('tech_stack')
+        .upsert({
+          company_id: company.id,
+          wms_system: wmsSystem || 'Not specified',
+          other_wms: otherWms || null,
+          has_client_portal: hasClientPortal,
+          integrations: integrations,
+          has_proprietary_software: hasProprietarySoftware,
+          proprietary_software_details: proprietarySoftwareDetails || null,
+          carriers: carriers,
+        }, {
+          onConflict: 'company_id'
+        });
 
-    // Insert tech stack
-    const { error: techStackError } = await supabase
-      .from('tech_stack')
-      .insert({
-        company_id: company.id,
-        wms_system: rest.wmsSystem,
-        other_wms: rest.otherWms,
-        has_client_portal: rest.hasClientPortal,
-        integrations: rest.integrations,
-        has_proprietary_software: rest.hasProprietarySoftware,
-        proprietary_software_details: rest.proprietarySoftwareDetails,
-        carriers: rest.carriers,
-      });
+      if (techStackError) {
+        console.error('Tech stack creation error:', techStackError);
+        throw new Error(`Failed to create tech stack: ${techStackError.message}`);
+      }
 
-    if (techStackError) throw techStackError;
+      // 5. Create performance metrics record
+      const { error: metricsError } = await supabase
+        .from('performance_metrics')
+        .upsert({
+          company_id: company.id,
+          average_receiving_time: averageReceivingTime || 0,
+          max_receiving_time: maxReceivingTime || 0,
+          notifies_on_receiving: notifiesOnReceiving,
+          cutoff_time: cutoffTime || null,
+          dtc_sla: dtcSla || 'Not specified',
+          b2b_sla: b2bSla || null,
+          peak_season_sla: peakSeasonSla || null,
+          returns_processing_time: returnsProcessingTime || null,
+          provides_branded_return_portals: providesBrandedReturnPortals,
+          order_accuracy_rate: orderAccuracyRate || 'Not specified',
+          inventory_accuracy_rate: inventoryAccuracyRate || 'Not specified',
+          cycle_counting: cycleCounting || 'Not specified',
+          provides_real_time_tracking: providesRealTimeTracking,
+          billing_frequency: billingFrequency || 'Not specified',
+          has_onboarding_fees: hasOnboardingFees,
+          transparent_fees: transparentFees,
+          has_dedicated_manager: hasDedicatedManager,
+          response_time: responseTime || 'Not specified',
+          support_hours: supportHours || 'Not specified',
+          has_weekend_support: hasWeekendSupport,
+          requires_long_term_contracts: requiresLongTermContracts,
+          provides_onboarding_support: providesOnboardingSupport,
+          has_standard_onboarding: hasStandardOnboarding,
+        }, {
+          onConflict: 'company_id'
+        });
 
-    // Insert performance metrics
-    const { error: metricsError } = await supabase
-      .from('performance_metrics')
-      .insert({
-        company_id: company.id,
-        average_receiving_time: rest.averageReceivingTime,
-        max_receiving_time: rest.maxReceivingTime,
-        notifies_on_receiving: rest.notifiesOnReceiving,
-        cutoff_time: rest.cutoffTime,
-        dtc_sla: rest.dtcSla,
-        b2b_sla: rest.b2bSla,
-        peak_season_sla: rest.peakSeasonSla,
-        returns_processing_time: rest.returnsProcessingTime,
-        provides_branded_return_portals: rest.providesBrandedReturnPortals,
-        order_accuracy_rate: rest.orderAccuracyRate,
-        inventory_accuracy_rate: rest.inventoryAccuracyRate,
-        cycle_counting: rest.cycleCounting,
-        provides_real_time_tracking: rest.providesRealTimeTracking,
-        billing_frequency: rest.billingFrequency,
-        has_onboarding_fees: rest.hasOnboardingFees,
-        transparent_fees: rest.transparentFees,
-        has_dedicated_manager: rest.hasDedicatedManager,
-        response_time: rest.responseTime,
-        support_hours: rest.supportHours,
-        has_weekend_support: rest.hasWeekendSupport,
-        requires_long_term_contracts: rest.requiresLongTermContracts,
-        provides_onboarding_support: rest.providesOnboardingSupport,
-        has_standard_onboarding: rest.hasStandardOnboarding,
-      });
+      if (metricsError) {
+        console.error('Performance metrics creation error:', metricsError);
+        throw new Error(`Failed to create performance metrics: ${metricsError.message}`);
+      }
 
-    if (metricsError) throw metricsError;
+      // 6. Create customer references (only if they have content)
+      if (references && references.length > 0) {
+        const validReferences = references.filter(ref => 
+          ref.brandName?.trim() || ref.website?.trim() || ref.contactEmail?.trim()
+        );
 
-    // Insert customer references
-    const referenceInserts = rest.references.map(ref => ({
-      company_id: company.id,
-      brand_name: ref.brandName,
-      website: ref.website,
-      contact_email: ref.contactEmail,
-    }));
+        if (validReferences.length > 0) {
+          // Delete existing references first
+          await supabase
+            .from('customer_references')
+            .delete()
+            .eq('company_id', company.id);
 
-    const { error: referencesError } = await supabase
-      .from('customer_references')
-      .insert(referenceInserts);
+          // Insert new references
+          const referenceInserts = validReferences.map(ref => ({
+            company_id: company.id,
+            brand_name: ref.brandName || 'Not provided',
+            website: ref.website || 'Not provided',
+            contact_email: ref.contactEmail || 'Not provided',
+          }));
 
-    if (referencesError) throw referencesError;
+          const { error: referencesError } = await supabase
+            .from('customer_references')
+            .insert(referenceInserts);
 
-    // Insert media assets
-    const { error: mediaError } = await supabase
-      .from('media_assets')
-      .insert({
-        company_id: company.id,
-        logo_url: '', // Handle file upload separately
-        warehouse_image_urls: [], // Handle file upload separately
-        intro_video_url: rest.introVideo,
-      });
+          if (referencesError) {
+            console.error('References creation error:', referencesError);
+            // Don't throw here, references are optional
+            console.warn('Failed to create references, but continuing...');
+          }
+        }
+      }
 
-    if (mediaError) throw mediaError;
+      // 7. Create media assets record
+      const { error: mediaError } = await supabase
+        .from('media_assets')
+        .upsert({
+          company_id: company.id,
+          logo_url: null, // File uploads would be handled separately
+          warehouse_image_urls: [], // File uploads would be handled separately
+          intro_video_url: introVideo || null,
+        }, {
+          onConflict: 'company_id'
+        });
 
-    return company;
+      if (mediaError) {
+        console.error('Media assets creation error:', mediaError);
+        throw new Error(`Failed to create media assets: ${mediaError.message}`);
+      }
+
+      console.log('All data successfully saved to Supabase');
+      return company;
+
+    } catch (error) {
+      console.error('Database operation failed:', error);
+      throw error;
+    }
   }
 
   async getCompanyProfile(userId: string) {
@@ -163,7 +258,6 @@ export class DatabaseService {
       .from('companies')
       .select(`
         *,
-        warehouses (*),
         capabilities (*),
         compliance (*),
         tech_stack (*),
