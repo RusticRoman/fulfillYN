@@ -13,8 +13,9 @@ import Footer from './components/layout/Footer';
 import LoginForm from './components/auth/LoginForm';
 import SignupForm from './components/auth/SignupForm';
 import UserCabinet from './components/dashboard/UserCabinet';
+import WarehouseList from './components/dashboard/WarehouseList';
 
-type AppView = 'home' | 'login' | 'signup' | 'cabinet' | '3pl-form';
+type AppView = 'home' | 'login' | 'signup' | 'cabinet' | 'warehouses' | '3pl-form';
 
 function AppContent() {
   const [currentView, setCurrentView] = useState<AppView>('home');
@@ -31,7 +32,7 @@ function AppContent() {
   const handleUserTypeSelection = (type: 'brand' | '3pl') => {
     setUserType(type);
     if (type === '3pl') {
-      setCurrentView('3pl-form');
+      setCurrentView('warehouses');
     } else {
       // For brands, you could redirect to a different dashboard
       setCurrentView('home');
@@ -40,6 +41,10 @@ function AppContent() {
 
   const handleLogout = () => {
     setCurrentView('home');
+  };
+
+  const handleAddWarehouse = () => {
+    setCurrentView('3pl-form');
   };
 
   // Signup page
@@ -72,11 +77,21 @@ function AppContent() {
     );
   }
 
+  // Warehouse list for 3PL users
+  if (currentView === 'warehouses') {
+    return (
+      <WarehouseList 
+        onAddWarehouse={handleAddWarehouse}
+        onBack={() => setCurrentView('cabinet')}
+      />
+    );
+  }
+
   // 3PL Partner form
   if (currentView === '3pl-form') {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Header onBack={() => setCurrentView('cabinet')} showBackButton />
+        <Header onBack={() => setCurrentView('warehouses')} showBackButton />
         <main className="max-w-7xl mx-auto px-4 py-6 sm:px-6">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-gray-900 mb-3">Become a 3PL Partner</h2>
