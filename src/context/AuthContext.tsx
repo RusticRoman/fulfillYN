@@ -27,11 +27,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const getSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.user) {
+        // Fetch user profile to get complete user data
+        const { data: profile } = await supabase
+          .from('user_profiles')
+          .select('*')
+          .eq('user_id', session.user.id)
+          .single();
+
         const user: User = {
           id: session.user.id,
           email: session.user.email || '',
-          firstName: session.user.user_metadata?.first_name || 'User',
-          lastName: session.user.user_metadata?.last_name || '',
+          firstName: profile?.first_name || session.user.user_metadata?.first_name || 'User',
+          lastName: profile?.last_name || session.user.user_metadata?.last_name || '',
+          userType: profile?.user_type || session.user.user_metadata?.user_type,
         };
         
         setAuthState({
@@ -54,11 +62,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (session?.user) {
+          // Fetch user profile to get complete user data
+          const { data: profile } = await supabase
+            .from('user_profiles')
+            .select('*')
+            .eq('user_id', session.user.id)
+            .single();
+
           const user: User = {
             id: session.user.id,
             email: session.user.email || '',
-            firstName: session.user.user_metadata?.first_name || 'User',
-            lastName: session.user.user_metadata?.last_name || '',
+            firstName: profile?.first_name || session.user.user_metadata?.first_name || 'User',
+            lastName: profile?.last_name || session.user.user_metadata?.last_name || '',
+            userType: profile?.user_type || session.user.user_metadata?.user_type,
           };
           
           setAuthState({
@@ -91,11 +107,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (error) throw error;
 
       if (data.user) {
+        // Fetch user profile to get complete user data
+        const { data: profile } = await supabase
+          .from('user_profiles')
+          .select('*')
+          .eq('user_id', data.user.id)
+          .single();
+
         const user: User = {
           id: data.user.id,
           email: data.user.email || '',
-          firstName: data.user.user_metadata?.first_name || 'User',
-          lastName: data.user.user_metadata?.last_name || '',
+          firstName: profile?.first_name || data.user.user_metadata?.first_name || 'User',
+          lastName: profile?.last_name || data.user.user_metadata?.last_name || '',
+          userType: profile?.user_type || data.user.user_metadata?.user_type,
         };
         
         setAuthState({
@@ -129,27 +153,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (error) throw error;
 
       if (data.user) {
-        // Create user profile record
-        const { error: profileError } = await supabase
+        // The user profile should be created automatically by the database trigger
+        // Wait a moment for the trigger to complete, then fetch the profile
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        const { data: profile } = await supabase
           .from('user_profiles')
-          .insert({
-            user_id: data.user.id,
-            first_name: firstName,
-            last_name: lastName,
-            user_type: userType,
-          });
-
-        if (profileError) {
-          console.error('Error creating user profile:', profileError);
-          // Don't throw here as the user account was created successfully
-        }
+          .select('*')
+          .eq('user_id', data.user.id)
+          .single();
 
         const user: User = {
           id: data.user.id,
           email: data.user.email || '',
-          firstName: firstName,
-          lastName: lastName,
-          userType: userType,
+          firstName: profile?.first_name || firstName,
+          lastName: profile?.last_name || lastName,
+          userType: profile?.user_type || userType,
         };
         
         setAuthState({
