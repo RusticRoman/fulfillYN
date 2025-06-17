@@ -115,10 +115,6 @@ const BrandDashboard: React.FC<BrandDashboardProps> = ({ onAddBrand, onBack }) =
               <h1 className="text-2xl font-bold text-gray-900">My Brands</h1>
               <p className="text-gray-600">Manage your brand profiles and 3PL matching criteria</p>
             </div>
-            <Button onClick={onAddBrand} className="bg-purple-600 hover:bg-purple-700">
-              <Plus className="w-4 h-4 mr-2" />
-              Add Brand
-            </Button>
           </div>
         </div>
       </header>
