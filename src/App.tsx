@@ -15,7 +15,7 @@ import Footer from './components/layout/Footer';
 import LoginForm from './components/auth/LoginForm';
 import SignupForm from './components/auth/SignupForm';
 import UserCabinet from './components/dashboard/UserCabinet';
-import WarehouseList from './components/dashboard/WarehouseList';
+import WarehouseDashboard from './components/dashboard/WarehouseDashboard';
 import BrandDashboard from './components/dashboard/BrandDashboard';
 import AdminDashboard from './components/dashboard/AdminDashboard';
 
@@ -94,7 +94,7 @@ function AppContent() {
     return (
       <LoginForm 
         onSuccess={handleLoginSuccess}
-        onSwitchToSignup={() => setCurrentView('signup')}
+        onSwitchToLogin={() => setCurrentView('signup')}
       />
     );
   }
@@ -150,10 +150,10 @@ function AppContent() {
     );
   }
 
-  // Warehouse list for 3PL users
+  // Warehouse dashboard for 3PL users
   if (currentView === 'warehouses') {
     return (
-      <WarehouseList 
+      <WarehouseDashboard 
         onAddWarehouse={handleAddWarehouse}
         onBack={() => setCurrentView('cabinet')}
       />
