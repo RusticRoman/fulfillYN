@@ -159,17 +159,20 @@ const WarehouseList: React.FC<WarehouseListProps> = ({ onAddWarehouse, onBack })
             ))}
 
             {/* Add Warehouse Card */}
-            <Card className="border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors cursor-pointer" onClick={onAddWarehouse}>
+            <div 
+              onClick={onAddWarehouse}
+              className="bg-white border-2 border-dashed border-gray-300 hover:border-blue-400 hover:bg-blue-50 transition-all duration-200 cursor-pointer rounded-lg p-6 group transform hover:scale-105"
+            >
               <div className="flex flex-col items-center justify-center py-12 text-center">
-                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                  <Plus className="w-8 h-8 text-gray-400" />
+                <div className="w-16 h-16 bg-blue-100 group-hover:bg-blue-200 rounded-full flex items-center justify-center mb-4 transition-colors">
+                  <Plus className="w-8 h-8 text-blue-500 group-hover:text-blue-600 transition-colors" />
                 </div>
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Add New Warehouse</h3>
-                <p className="text-sm text-gray-600">
+                <h3 className="text-lg font-medium text-gray-900 group-hover:text-blue-700 mb-2 transition-colors">Add New Warehouse</h3>
+                <p className="text-sm text-gray-600 group-hover:text-blue-600 transition-colors">
                   Expand your network by adding another warehouse location
                 </p>
               </div>
-            </Card>
+            </div>
           </div>
         )}
 
