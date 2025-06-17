@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase';
 
 interface AuthContextType extends AuthState {
   login: (email: string, password: string) => Promise<void>;
-  signup: (email: string, password: string, firstName: string, lastName: string, userType: 'brand' | '3pl') => Promise<void>;
+  signup: (email: string, password: string, firstName: string, lastName: string, userType: 'brand' | '3pl' | 'admin') => Promise<void>;
   logout: () => void;
   setUserType: (type: 'brand' | '3pl' | 'admin') => void;
 }
@@ -134,7 +134,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const signup = async (email: string, password: string, firstName: string, lastName: string, userType: 'brand' | '3pl') => {
+  const signup = async (email: string, password: string, firstName: string, lastName: string, userType: 'brand' | '3pl' | 'admin') => {
     setAuthState(prev => ({ ...prev, isLoading: true }));
     
     try {
@@ -192,8 +192,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     });
   };
 
-  const setUserType = (type: 'brand' | '3pl' | 'admin') => {
+  const setUserType = async (type: 'brand' | '3pl' | 'admin') => {
     if (authState.user) {
+      // Update in database
+      const { error } = await supabase
+        .from('user_profiles')
+        .update({ user_type: type })
+        .eq('user_id', authState.user.id);
+
+      if (error) {
+        console.error('Failed to update user type:', error);
+        return;
+      }
+
+      // Update local state
       setAuthState(prev => ({
         ...prev,
         user: prev.user ? { ...prev.user, userType: type } : null,

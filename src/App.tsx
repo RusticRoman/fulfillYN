@@ -26,24 +26,42 @@ function AppContent() {
   const { isAuthenticated, user, setUserType } = useAuth();
 
   const handleLoginSuccess = () => {
-    // Check if user already has a userType and navigate accordingly
-    if (user?.userType) {
-      if (user.userType === '3pl') {
-        setCurrentView('warehouses');
-      } else if (user.userType === 'admin') {
-        setCurrentView('admin');
-      } else if (user.userType === 'brand') {
-        setCurrentView('brands');
+    // Wait a moment for user data to be fully loaded
+    setTimeout(() => {
+      // Check if user already has a userType and navigate accordingly
+      if (user?.userType) {
+        if (user.userType === '3pl') {
+          setCurrentView('warehouses');
+        } else if (user.userType === 'admin') {
+          setCurrentView('admin');
+        } else if (user.userType === 'brand') {
+          setCurrentView('brands');
+        } else {
+          setCurrentView('cabinet');
+        }
       } else {
         setCurrentView('cabinet');
       }
-    } else {
-      setCurrentView('cabinet');
-    }
+    }, 100);
   };
 
   const handleSignupSuccess = () => {
-    setCurrentView('cabinet');
+    // Wait a moment for user data to be fully loaded after signup
+    setTimeout(() => {
+      if (user?.userType) {
+        if (user.userType === '3pl') {
+          setCurrentView('warehouses');
+        } else if (user.userType === 'admin') {
+          setCurrentView('admin');
+        } else if (user.userType === 'brand') {
+          setCurrentView('brands');
+        } else {
+          setCurrentView('cabinet');
+        }
+      } else {
+        setCurrentView('cabinet');
+      }
+    }, 100);
   };
 
   const handleUserTypeSelection = (type: 'brand' | '3pl' | 'admin') => {
@@ -79,6 +97,19 @@ function AppContent() {
     setCurrentView('brands');
   };
 
+  // Auto-navigate based on user type when user data is loaded
+  React.useEffect(() => {
+    if (isAuthenticated && user?.userType && currentView === 'home') {
+      if (user.userType === '3pl') {
+        setCurrentView('warehouses');
+      } else if (user.userType === 'admin') {
+        setCurrentView('admin');
+      } else if (user.userType === 'brand') {
+        setCurrentView('brands');
+      }
+    }
+  }, [isAuthenticated, user, currentView]);
+
   // Signup page
   if (currentView === 'signup') {
     return (
@@ -94,7 +125,7 @@ function AppContent() {
     return (
       <LoginForm 
         onSuccess={handleLoginSuccess}
-        onSwitchToLogin={() => setCurrentView('signup')}
+        onSwitchToSignup={() => setCurrentView('signup')}
       />
     );
   }
