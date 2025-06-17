@@ -260,17 +260,20 @@ const BrandDashboard: React.FC<BrandDashboardProps> = ({ onAddBrand, onBack }) =
               ))}
 
               {/* Add Brand Card */}
-              <Card className="border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors cursor-pointer" onClick={onAddBrand}>
+              <div 
+                onClick={onAddBrand}
+                className="bg-white border-2 border-dashed border-gray-300 hover:border-purple-400 hover:bg-purple-50 transition-all duration-200 cursor-pointer rounded-lg p-6 group transform hover:scale-105"
+              >
                 <div className="flex flex-col items-center justify-center py-12 text-center">
-                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                    <Plus className="w-8 h-8 text-gray-400" />
+                  <div className="w-16 h-16 bg-purple-100 group-hover:bg-purple-200 rounded-full flex items-center justify-center mb-4 transition-colors">
+                    <Plus className="w-8 h-8 text-purple-500 group-hover:text-purple-600 transition-colors" />
                   </div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">Add New Brand</h3>
-                  <p className="text-sm text-gray-600">
+                  <h3 className="text-lg font-medium text-gray-900 group-hover:text-purple-700 mb-2 transition-colors">Add New Brand</h3>
+                  <p className="text-sm text-gray-600 group-hover:text-purple-600 transition-colors">
                     Create a new brand profile to find matching 3PL partners
                   </p>
                 </div>
-              </Card>
+              </div>
             </div>
 
             {/* Stats Section */}
