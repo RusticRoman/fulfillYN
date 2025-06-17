@@ -12,7 +12,14 @@ import {
   ArrowRight,
   BarChart3,
   Settings,
-  LogOut
+  LogOut,
+  Heart,
+  Star,
+  TrendingUp,
+  MapPin,
+  Package,
+  Zap,
+  MessageCircle
 } from 'lucide-react';
 import Button from '../ui/Button';
 import Card from '../ui/Card';
@@ -29,6 +36,16 @@ interface Brand {
   email: string;
   industry: string;
   monthlyVolume: number;
+  requirements: {
+    temperatureControlled: boolean;
+    hazmatSupport: boolean;
+    fbaPrep: boolean;
+    b2bSupport: boolean;
+    sameDayShipping: boolean;
+    realTimeTracking: boolean;
+  };
+  preferredLocations: string[];
+  budgetRange: string;
   status: 'active' | 'pending' | 'suspended';
   joinedDate: string;
 }
@@ -39,14 +56,35 @@ interface ThreePL {
   email: string;
   location: string;
   warehouses: number;
+  capabilities: {
+    temperatureControlled: boolean;
+    hazmatSupport: boolean;
+    fbaPrep: boolean;
+    b2bSupport: boolean;
+    sameDayShipping: boolean;
+    realTimeTracking: boolean;
+  };
+  minimumVolume: number;
   certified: boolean;
   status: 'active' | 'pending' | 'suspended';
   joinedDate: string;
 }
 
+interface PotentialMatch {
+  id: string;
+  brand: Brand;
+  threePL: ThreePL;
+  matchScore: number;
+  matchingCriteria: string[];
+  missingCriteria: string[];
+  locationMatch: boolean;
+  volumeMatch: boolean;
+  status: 'new' | 'contacted' | 'in_discussion' | 'matched' | 'rejected';
+}
+
 const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBack, onLogout }) => {
   const { user, logout } = useAuth();
-  const [activeTab, setActiveTab] = useState<'overview' | 'brands' | '3pls'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'brands' | '3pls' | 'matches'>('overview');
   const [searchTerm, setSearchTerm] = useState('');
 
   // Mock data
@@ -57,6 +95,16 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBack, onLogout }) => 
       email: 'sarah@ecobeauty.com',
       industry: 'Beauty & Wellness',
       monthlyVolume: 2500,
+      requirements: {
+        temperatureControlled: true,
+        hazmatSupport: false,
+        fbaPrep: true,
+        b2bSupport: false,
+        sameDayShipping: false,
+        realTimeTracking: true,
+      },
+      preferredLocations: ['West Coast', 'East Coast'],
+      budgetRange: '$5,000 - $15,000/month',
       status: 'active',
       joinedDate: '2024-01-15'
     },
@@ -66,6 +114,16 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBack, onLogout }) => 
       email: 'marcus@techgearpro.com',
       industry: 'Electronics',
       monthlyVolume: 1800,
+      requirements: {
+        temperatureControlled: false,
+        hazmatSupport: false,
+        fbaPrep: true,
+        b2bSupport: true,
+        sameDayShipping: true,
+        realTimeTracking: true,
+      },
+      preferredLocations: ['Midwest', 'South'],
+      budgetRange: '$15,000 - $50,000/month',
       status: 'active',
       joinedDate: '2024-02-20'
     },
@@ -75,6 +133,16 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBack, onLogout }) => 
       email: 'emily@freshfoods.com',
       industry: 'Food & Beverage',
       monthlyVolume: 3200,
+      requirements: {
+        temperatureControlled: true,
+        hazmatSupport: false,
+        fbaPrep: false,
+        b2bSupport: true,
+        sameDayShipping: false,
+        realTimeTracking: true,
+      },
+      preferredLocations: ['Midwest', 'East Coast'],
+      budgetRange: '$50,000 - $100,000/month',
       status: 'pending',
       joinedDate: '2024-03-10'
     }
@@ -87,6 +155,15 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBack, onLogout }) => 
       email: 'contact@logiflow.com',
       location: 'Los Angeles, CA',
       warehouses: 3,
+      capabilities: {
+        temperatureControlled: true,
+        hazmatSupport: false,
+        fbaPrep: true,
+        b2bSupport: true,
+        sameDayShipping: false,
+        realTimeTracking: true,
+      },
+      minimumVolume: 1000,
       certified: true,
       status: 'active',
       joinedDate: '2023-11-20'
@@ -97,6 +174,15 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBack, onLogout }) => 
       email: 'info@fasttrack.com',
       location: 'Atlanta, GA',
       warehouses: 2,
+      capabilities: {
+        temperatureControlled: false,
+        hazmatSupport: false,
+        fbaPrep: true,
+        b2bSupport: true,
+        sameDayShipping: true,
+        realTimeTracking: true,
+      },
+      minimumVolume: 500,
       certified: false,
       status: 'pending',
       joinedDate: '2024-01-05'
@@ -107,11 +193,83 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBack, onLogout }) => 
       email: 'hello@primelogistics.com',
       location: 'Chicago, IL',
       warehouses: 5,
+      capabilities: {
+        temperatureControlled: true,
+        hazmatSupport: true,
+        fbaPrep: true,
+        b2bSupport: true,
+        sameDayShipping: false,
+        realTimeTracking: true,
+      },
+      minimumVolume: 2000,
       certified: true,
       status: 'active',
       joinedDate: '2023-09-15'
     }
   ]);
+
+  // Generate potential matches
+  const generateMatches = (): PotentialMatch[] => {
+    const matches: PotentialMatch[] = [];
+    
+    brands.forEach(brand => {
+      threePLs.forEach(threePL => {
+        const matchingCriteria: string[] = [];
+        const missingCriteria: string[] = [];
+        
+        // Check capability matches
+        Object.entries(brand.requirements).forEach(([key, required]) => {
+          if (required) {
+            const capability = threePL.capabilities[key as keyof typeof threePL.capabilities];
+            if (capability) {
+              matchingCriteria.push(key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()));
+            } else {
+              missingCriteria.push(key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()));
+            }
+          }
+        });
+
+        // Check volume compatibility
+        const volumeMatch = brand.monthlyVolume >= threePL.minimumVolume;
+        if (volumeMatch) {
+          matchingCriteria.push('Volume Requirements');
+        } else {
+          missingCriteria.push('Volume Requirements');
+        }
+
+        // Check location match (simplified)
+        const locationMatch = brand.preferredLocations.some(loc => 
+          threePL.location.toLowerCase().includes(loc.toLowerCase().split(' ')[0])
+        );
+        if (locationMatch) {
+          matchingCriteria.push('Location Preference');
+        }
+
+        // Calculate match score
+        const totalCriteria = Object.values(brand.requirements).filter(Boolean).length + 2; // +2 for volume and location
+        const matchScore = Math.round((matchingCriteria.length / totalCriteria) * 100);
+
+        // Only include matches with score > 40%
+        if (matchScore > 40) {
+          matches.push({
+            id: `${brand.id}-${threePL.id}`,
+            brand,
+            threePL,
+            matchScore,
+            matchingCriteria,
+            missingCriteria,
+            locationMatch,
+            volumeMatch,
+            status: 'new'
+          });
+        }
+      });
+    });
+
+    return matches.sort((a, b) => b.matchScore - a.matchScore);
+  };
+
+  const potentialMatches = generateMatches();
 
   const handleLogout = () => {
     logout();
@@ -139,6 +297,29 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBack, onLogout }) => 
     }
   };
 
+  const getMatchStatusColor = (status: string) => {
+    switch (status) {
+      case 'new':
+        return 'bg-blue-100 text-blue-800';
+      case 'contacted':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'in_discussion':
+        return 'bg-purple-100 text-purple-800';
+      case 'matched':
+        return 'bg-green-100 text-green-800';
+      case 'rejected':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getMatchScoreColor = (score: number) => {
+    if (score >= 80) return 'text-green-600 bg-green-100';
+    if (score >= 60) return 'text-yellow-600 bg-yellow-100';
+    return 'text-orange-600 bg-orange-100';
+  };
+
   const filteredBrands = brands.filter(brand =>
     brand.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     brand.email.toLowerCase().includes(searchTerm.toLowerCase())
@@ -147,6 +328,11 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBack, onLogout }) => 
   const filteredThreePLs = threePLs.filter(threePL =>
     threePL.companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     threePL.email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const filteredMatches = potentialMatches.filter(match =>
+    match.brand.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    match.threePL.companyName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -224,6 +410,17 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBack, onLogout }) => 
               <Building2 className="w-4 h-4 inline mr-2" />
               3PL Partners ({threePLs.length})
             </button>
+            <button
+              onClick={() => setActiveTab('matches')}
+              className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                activeTab === 'matches'
+                  ? 'border-emerald-500 text-emerald-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              <Heart className="w-4 h-4 inline mr-2" />
+              Potential Matches ({potentialMatches.length})
+            </button>
           </nav>
         </div>
       </div>
@@ -233,7 +430,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBack, onLogout }) => 
         {activeTab === 'overview' && (
           <div className="space-y-8">
             {/* Stats Grid */}
-            <div className="grid md:grid-cols-4 gap-6">
+            <div className="grid md:grid-cols-5 gap-6">
               <Card className="p-6">
                 <div className="flex items-center">
                   <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -274,6 +471,18 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBack, onLogout }) => 
 
               <Card className="p-6">
                 <div className="flex items-center">
+                  <div className="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center">
+                    <Heart className="w-6 h-6 text-pink-600" />
+                  </div>
+                  <div className="ml-4">
+                    <p className="text-sm font-medium text-gray-600">Potential Matches</p>
+                    <p className="text-2xl font-bold text-gray-900">{potentialMatches.length}</p>
+                  </div>
+                </div>
+              </Card>
+
+              <Card className="p-6">
+                <div className="flex items-center">
                   <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
                     <XCircle className="w-6 h-6 text-yellow-600" />
                   </div>
@@ -286,6 +495,47 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBack, onLogout }) => 
                 </div>
               </Card>
             </div>
+
+            {/* Top Matches Preview */}
+            <Card title="Top Potential Matches" className="p-6">
+              <div className="space-y-4">
+                {potentialMatches.slice(0, 3).map((match) => (
+                  <div key={match.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div className="flex items-center space-x-4">
+                      <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg ${getMatchScoreColor(match.matchScore)}`}>
+                        {match.matchScore}%
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-900">
+                          {match.brand.name} ↔ {match.threePL.companyName}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          {match.matchingCriteria.slice(0, 3).join(', ')}
+                          {match.matchingCriteria.length > 3 && ` +${match.matchingCriteria.length - 3} more`}
+                        </p>
+                      </div>
+                    </div>
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      onClick={() => setActiveTab('matches')}
+                    >
+                      <Eye className="w-4 h-4 mr-1" />
+                      View
+                    </Button>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4 text-center">
+                <Button 
+                  variant="outline"
+                  onClick={() => setActiveTab('matches')}
+                >
+                  View All Matches
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </div>
+            </Card>
 
             {/* Recent Activity */}
             <Card title="Recent Activity" className="p-6">
@@ -325,6 +575,154 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBack, onLogout }) => 
                 </div>
               </div>
             </Card>
+          </div>
+        )}
+
+        {activeTab === 'matches' && (
+          <div className="space-y-6">
+            {/* Search and Filters */}
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search matches..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                />
+              </div>
+              <Button variant="outline">
+                <Filter className="w-4 h-4 mr-2" />
+                Filter
+              </Button>
+            </div>
+
+            {/* Matches Grid */}
+            <div className="grid gap-6">
+              {filteredMatches.map((match) => (
+                <Card key={match.id} className="p-6">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center space-x-4">
+                      <div className={`w-16 h-16 rounded-full flex items-center justify-center font-bold text-xl ${getMatchScoreColor(match.matchScore)}`}>
+                        {match.matchScore}%
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-900">
+                          {match.brand.name} ↔ {match.threePL.companyName}
+                        </h3>
+                        <div className="flex items-center space-x-4 mt-1">
+                          <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${getMatchStatusColor(match.status)}`}>
+                            {match.status.replace('_', ' ').toUpperCase()}
+                          </span>
+                          {match.locationMatch && (
+                            <span className="inline-flex items-center text-xs text-green-600">
+                              <MapPin className="w-3 h-3 mr-1" />
+                              Location Match
+                            </span>
+                          )}
+                          {match.volumeMatch && (
+                            <span className="inline-flex items-center text-xs text-green-600">
+                              <Package className="w-3 h-3 mr-1" />
+                              Volume Compatible
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex space-x-2">
+                      <Button variant="outline" size="sm">
+                        <MessageCircle className="w-4 h-4 mr-1" />
+                        Connect
+                      </Button>
+                      <Button variant="outline" size="sm">
+                        <Eye className="w-4 h-4 mr-1" />
+                        Details
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-6">
+                    {/* Brand Info */}
+                    <div className="bg-purple-50 rounded-lg p-4">
+                      <h4 className="font-medium text-purple-900 mb-2 flex items-center">
+                        <Users className="w-4 h-4 mr-2" />
+                        Brand: {match.brand.name}
+                      </h4>
+                      <div className="space-y-2 text-sm text-purple-800">
+                        <p><strong>Industry:</strong> {match.brand.industry}</p>
+                        <p><strong>Monthly Volume:</strong> {match.brand.monthlyVolume.toLocaleString()} units</p>
+                        <p><strong>Budget:</strong> {match.brand.budgetRange}</p>
+                        <p><strong>Locations:</strong> {match.brand.preferredLocations.join(', ')}</p>
+                      </div>
+                    </div>
+
+                    {/* 3PL Info */}
+                    <div className="bg-blue-50 rounded-lg p-4">
+                      <h4 className="font-medium text-blue-900 mb-2 flex items-center">
+                        <Building2 className="w-4 h-4 mr-2" />
+                        3PL: {match.threePL.companyName}
+                      </h4>
+                      <div className="space-y-2 text-sm text-blue-800">
+                        <p><strong>Location:</strong> {match.threePL.location}</p>
+                        <p><strong>Warehouses:</strong> {match.threePL.warehouses} locations</p>
+                        <p><strong>Min. Volume:</strong> {match.threePL.minimumVolume.toLocaleString()} units/month</p>
+                        <p><strong>Certified:</strong> {match.threePL.certified ? 'Yes' : 'No'}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Matching Criteria */}
+                  <div className="mt-4 grid md:grid-cols-2 gap-4">
+                    <div>
+                      <h5 className="font-medium text-green-700 mb-2 flex items-center">
+                        <CheckCircle className="w-4 h-4 mr-2" />
+                        Matching Criteria ({match.matchingCriteria.length})
+                      </h5>
+                      <div className="flex flex-wrap gap-1">
+                        {match.matchingCriteria.map((criteria, index) => (
+                          <span
+                            key={index}
+                            className="inline-block px-2 py-1 bg-green-100 text-green-700 text-xs rounded-md"
+                          >
+                            {criteria}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {match.missingCriteria.length > 0 && (
+                      <div>
+                        <h5 className="font-medium text-orange-700 mb-2 flex items-center">
+                          <XCircle className="w-4 h-4 mr-2" />
+                          Missing Criteria ({match.missingCriteria.length})
+                        </h5>
+                        <div className="flex flex-wrap gap-1">
+                          {match.missingCriteria.map((criteria, index) => (
+                            <span
+                              key={index}
+                              className="inline-block px-2 py-1 bg-orange-100 text-orange-700 text-xs rounded-md"
+                            >
+                              {criteria}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </Card>
+              ))}
+
+              {filteredMatches.length === 0 && (
+                <Card className="p-12 text-center">
+                  <Heart className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">No matches found</h3>
+                  <p className="text-gray-600">
+                    {searchTerm ? 'Try adjusting your search terms.' : 'No potential matches available at this time.'}
+                  </p>
+                </Card>
+              )}
+            </div>
           </div>
         )}
 
