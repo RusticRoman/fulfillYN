@@ -72,10 +72,6 @@ const WarehouseDashboard: React.FC<WarehouseDashboardProps> = ({ onAddWarehouse,
               <h1 className="text-2xl font-bold text-gray-900">My Warehouses</h1>
               <p className="text-gray-600">Manage your warehouse locations and capabilities</p>
             </div>
-            <Button onClick={onAddWarehouse} className="bg-blue-600 hover:bg-blue-700">
-              <Plus className="w-4 h-4 mr-2" />
-              Add Warehouse
-            </Button>
           </div>
         </div>
       </header>
