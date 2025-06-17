@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Eye, EyeOff, Mail, Lock, User, ArrowRight, Check, Building2 } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, ArrowRight, Check, Building2, Shield } from 'lucide-react';
 import Button from '../ui/Button';
 import { useAuth } from '../../context/AuthContext';
 
@@ -16,7 +16,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSuccess, onSwitchToLogin }) =
     email: '',
     password: '',
     confirmPassword: '',
-    userType: '' as 'brand' | '3pl' | ''
+    userType: '' as 'brand' | '3pl' | 'admin' | ''
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -28,7 +28,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSuccess, onSwitchToLogin }) =
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleUserTypeSelect = (type: 'brand' | '3pl') => {
+  const handleUserTypeSelect = (type: 'brand' | '3pl' | 'admin') => {
     setFormData(prev => ({ ...prev, userType: type }));
   };
 
@@ -37,7 +37,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSuccess, onSwitchToLogin }) =
     setError('');
 
     if (!formData.userType) {
-      setError('Please select whether you are a Brand or 3PL Provider');
+      setError('Please select your account type');
       return;
     }
 
@@ -72,7 +72,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSuccess, onSwitchToLogin }) =
 
   const handleGoogleSignup = async () => {
     if (!formData.userType) {
-      setError('Please select whether you are a Brand or 3PL Provider before continuing with Google');
+      setError('Please select your account type before continuing with Google');
       return;
     }
 
@@ -116,7 +116,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSuccess, onSwitchToLogin }) =
               <label className="block text-sm font-medium text-gray-700 mb-3">
                 I am a <span className="text-red-500">*</span>
               </label>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3">
                 <button
                   type="button"
                   onClick={() => handleUserTypeSelect('brand')}
@@ -126,11 +126,15 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSuccess, onSwitchToLogin }) =
                       : 'border-gray-200 hover:border-gray-300 text-gray-700'
                   }`}
                 >
-                  <User className={`w-6 h-6 mx-auto mb-2 ${
-                    formData.userType === 'brand' ? 'text-purple-600' : 'text-gray-400'
-                  }`} />
-                  <div className="text-sm font-medium">Brand</div>
-                  <div className="text-xs text-gray-500 mt-1">Looking for 3PL</div>
+                  <div className="flex items-center">
+                    <User className={`w-6 h-6 mr-3 ${
+                      formData.userType === 'brand' ? 'text-purple-600' : 'text-gray-400'
+                    }`} />
+                    <div className="text-left">
+                      <div className="text-sm font-medium">Brand</div>
+                      <div className="text-xs text-gray-500">Looking for 3PL services</div>
+                    </div>
+                  </div>
                 </button>
                 
                 <button
@@ -142,11 +146,35 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSuccess, onSwitchToLogin }) =
                       : 'border-gray-200 hover:border-gray-300 text-gray-700'
                   }`}
                 >
-                  <Building2 className={`w-6 h-6 mx-auto mb-2 ${
-                    formData.userType === '3pl' ? 'text-blue-600' : 'text-gray-400'
-                  }`} />
-                  <div className="text-sm font-medium">3PL Provider</div>
-                  <div className="text-xs text-gray-500 mt-1">Offering services</div>
+                  <div className="flex items-center">
+                    <Building2 className={`w-6 h-6 mr-3 ${
+                      formData.userType === '3pl' ? 'text-blue-600' : 'text-gray-400'
+                    }`} />
+                    <div className="text-left">
+                      <div className="text-sm font-medium">3PL Provider</div>
+                      <div className="text-xs text-gray-500">Offering fulfillment services</div>
+                    </div>
+                  </div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleUserTypeSelect('admin')}
+                  className={`p-4 border-2 rounded-lg transition-all duration-200 ${
+                    formData.userType === 'admin'
+                      ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
+                      : 'border-gray-200 hover:border-gray-300 text-gray-700'
+                  }`}
+                >
+                  <div className="flex items-center">
+                    <Shield className={`w-6 h-6 mr-3 ${
+                      formData.userType === 'admin' ? 'text-emerald-600' : 'text-gray-400'
+                    }`} />
+                    <div className="text-left">
+                      <div className="text-sm font-medium">Administrator</div>
+                      <div className="text-xs text-gray-500">Platform management access</div>
+                    </div>
+                  </div>
                 </button>
               </div>
             </div>
