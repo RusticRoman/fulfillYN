@@ -12,12 +12,12 @@ interface Warehouse {
   status: 'active' | 'pending' | 'inactive';
 }
 
-interface WarehouseListProps {
+interface WarehouseDashboardProps {
   onAddWarehouse: () => void;
   onBack: () => void;
 }
 
-const WarehouseList: React.FC<WarehouseListProps> = ({ onAddWarehouse, onBack }) => {
+const WarehouseDashboard: React.FC<WarehouseDashboardProps> = ({ onAddWarehouse, onBack }) => {
   // Mock data - in real app this would come from API
   const [warehouses, setWarehouses] = useState<Warehouse[]>([
     {
@@ -239,4 +239,4 @@ const WarehouseList: React.FC<WarehouseListProps> = ({ onAddWarehouse, onBack })
   );
 };
 
-export default WarehouseList;
+export default WarehouseDashboard;
