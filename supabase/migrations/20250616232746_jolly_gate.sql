@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS capabilities (
   minimum_order_volume integer DEFAULT 0,
   created_at timestamptz DEFAULT now(),
   updated_at timestamptz DEFAULT now(),
-  
+
   -- Ensure one capabilities record per company
   UNIQUE(company_id)
 );
@@ -141,6 +141,39 @@ ALTER TABLE tech_stack ENABLE ROW LEVEL SECURITY;
 ALTER TABLE performance_metrics ENABLE ROW LEVEL SECURITY;
 ALTER TABLE customer_references ENABLE ROW LEVEL SECURITY;
 ALTER TABLE media_assets ENABLE ROW LEVEL SECURITY;
+
+-- Drop existing policies to avoid conflicts
+DROP POLICY IF EXISTS "Users can view own capabilities" ON capabilities;
+DROP POLICY IF EXISTS "Users can insert own capabilities" ON capabilities;
+DROP POLICY IF EXISTS "Users can update own capabilities" ON capabilities;
+DROP POLICY IF EXISTS "Admins can view all capabilities" ON capabilities;
+
+DROP POLICY IF EXISTS "Users can view own compliance" ON compliance;
+DROP POLICY IF EXISTS "Users can insert own compliance" ON compliance;
+DROP POLICY IF EXISTS "Users can update own compliance" ON compliance;
+DROP POLICY IF EXISTS "Admins can view all compliance" ON compliance;
+
+DROP POLICY IF EXISTS "Users can view own tech stack" ON tech_stack;
+DROP POLICY IF EXISTS "Users can insert own tech stack" ON tech_stack;
+DROP POLICY IF EXISTS "Users can update own tech stack" ON tech_stack;
+DROP POLICY IF EXISTS "Admins can view all tech stack" ON tech_stack;
+
+DROP POLICY IF EXISTS "Users can view own performance metrics" ON performance_metrics;
+DROP POLICY IF EXISTS "Users can insert own performance metrics" ON performance_metrics;
+DROP POLICY IF EXISTS "Users can update own performance metrics" ON performance_metrics;
+DROP POLICY IF EXISTS "Admins can view all performance metrics" ON performance_metrics;
+
+DROP POLICY IF EXISTS "Users can view own customer references" ON customer_references;
+DROP POLICY IF EXISTS "Users can insert own customer references" ON customer_references;
+DROP POLICY IF EXISTS "Users can update own customer references" ON customer_references;
+DROP POLICY IF EXISTS "Users can delete own customer references" ON customer_references;
+DROP POLICY IF EXISTS "Admins can view all customer references" ON customer_references;
+
+DROP POLICY IF EXISTS "Users can view own media assets" ON media_assets;
+DROP POLICY IF EXISTS "Users can insert own media assets" ON media_assets;
+DROP POLICY IF EXISTS "Users can update own media assets" ON media_assets;
+DROP POLICY IF EXISTS "Admins can view all media assets" ON media_assets;
+
 
 -- Capabilities policies
 CREATE POLICY "Users can view own capabilities"
@@ -365,6 +398,14 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
+-- Drop existing triggers if they exist
+DROP TRIGGER IF EXISTS update_capabilities_updated_at ON capabilities;
+DROP TRIGGER IF EXISTS update_compliance_updated_at ON compliance;
+DROP TRIGGER IF EXISTS update_tech_stack_updated_at ON tech_stack;
+DROP TRIGGER IF EXISTS update_performance_metrics_updated_at ON performance_metrics;
+DROP TRIGGER IF EXISTS update_customer_references_updated_at ON customer_references;
+DROP TRIGGER IF EXISTS update_media_assets_updated_at ON media_assets;
+
 CREATE TRIGGER update_capabilities_updated_at
     BEFORE UPDATE ON capabilities
     FOR EACH ROW
@@ -394,3 +435,4 @@ CREATE TRIGGER update_media_assets_updated_at
     BEFORE UPDATE ON media_assets
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
+
