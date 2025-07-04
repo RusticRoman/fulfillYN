@@ -22,6 +22,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     isLoading: true, // Start with loading true
   });
 
+  const loginWithGoogle = async () => {
+    setAuthState(prev => ({ ...prev, isLoading: true }));
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        // Optionally, set redirectTo to your app's URL (should match your Supabase Auth settings)
+        redirectTo: 'http://localhost:5173/',
+      },
+    });
+    setAuthState(prev => ({ ...prev, isLoading: false }));
+    if (error) throw error;
+  };
+
   // Check for existing session on mount
   useEffect(() => {
     const getSession = async () => {
@@ -220,6 +233,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       signup,
       logout,
       setUserType,
+      loginWithGoogle
     }}>
       {children}
     </AuthContext.Provider>

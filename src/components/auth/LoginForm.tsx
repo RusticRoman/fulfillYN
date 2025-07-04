@@ -14,7 +14,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToSignup }) =>
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
-  const { login, isLoading } = useAuth();
+  const { login, isLoading, loginWithGoogle } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,8 +32,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToSignup }) =>
   const handleGoogleLogin = async () => {
     setError('');
     try {
-      // For now, show a message that Google login is not implemented
-      setError('Google login is not yet implemented. Please use email and password to sign in, or create a new account.');
+      await loginWithGoogle();
+      // No need for onSuccess; Supabase will redirect on success
     } catch (err) {
       setError('Google login failed. Please try again.');
     }
